@@ -1,3 +1,0 @@
-portfolio,trade id,product,side,created at,size,size unit,price,fee,total,price/fee/total unit
-portfolio-name,#######,ADA-USD,BUY,2021-03-06T07:58:43.003Z,82.50000000,ADA,1.2,0.495,-99.495,USD
-portfolio-name,#######,ADA-USD,SELL,2021-05-13T10:33:09.982Z,82.50000000,ADA,1.35,0.556875,110.818125,USD

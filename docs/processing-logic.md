@@ -1,9 +1,11 @@
 ### Processing logic
 
-Primarily this tool is intended for FIFO (first in first out) meaning when you sell some currency, the amount you bought first/oldest that matches the amount sold will be used to check if you have a profit or not.
+The account statement CSV tracks your wallet's lifetime so the balance should always end up the same eg. if you expect it to be empty by end of 2022, the transactions will add up to be empty.
 
-If there is a remainder (buy row > sale size) or not enough (sale size > buy row), the next buy row is used, see the image below.
+The difficulty is the rounding due to amount having decimals as high as 5 places.
 
-<img src="./logic.png" width="800"/>
+<img src="./statement-parsing.png"/>
 
-Column E is the size bought and column F is the cost for that amount based on the currency price at this point in time. If you divide F by E you'll get the full currency amount cost.
+The processing of the CSV just goes through and keeps track of what you bought/when and then when selling subtracting against those units in that order eg. FIFO
+
+It is easier if you started with no cryptocurrency at the beginning of the year and none at the end of the year... if you had some from the previous year that has to be accounted for also/first to be sold.
