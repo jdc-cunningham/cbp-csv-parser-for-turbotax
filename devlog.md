@@ -1,3 +1,23 @@
+04/15/2023
+
+5:07 PM
+
+Okay my sleep pattern is still mega f'd just woke up
+
+But I need to get this done today
+
+I have to group the portfolios together, didn't think about that yesterday
+
+and detect if transferring to/from portfolios and make sure it all balances out
+
+6:09 PM
+
+this is tough... my mind just feels overwhelmed
+
+I could try charting... since that would show me where stuff goes up/down...
+
+Still working on the grouping though
+
 04/14/2023
 
 I have been procrastinating on this (and job searching/interviewing)
@@ -52,6 +72,12 @@ I could try charting... to see where I stopped because I did get to a point wher
 I'm looking for general rules
 
 - if the amount and balance rows are equal, means this portfolio/event had 0 balance starting out
+
+5:51 PM
+
+I'm not really being productive since I slept poorly but using `currency.js` seems to help with regard to rounding problems
+
+the other issue is keeping track of where stuff goes in what portfolio and FIFO order of transactions
 
 04/05/2023
 

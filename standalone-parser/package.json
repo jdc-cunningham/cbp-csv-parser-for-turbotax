@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "currency.js": "^2.0.4",
     "nodemon": "^2.0.22"
   }
 }

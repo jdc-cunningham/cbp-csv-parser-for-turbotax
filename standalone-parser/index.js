@@ -1,5 +1,7 @@
 const fs = require("fs");
 const http = require('http');
+const currencyFn = require('currency.js');
+const { prototype } = require("events");
 
 function buildHtml(rows) {
   var header = '';
@@ -35,6 +37,7 @@ http.createServer(function (req, res) {
   const csv2021Rows = {};
   const currencies = [];
   const balances = {};
+  const portfolios = {};
 
   fs.readFile("2021-account-statement.csv", "utf-8", (err, data) => {
     const rows = data.split('\n');
@@ -44,25 +47,40 @@ http.createServer(function (req, res) {
     rows.forEach(row => {
       if (row.length) {
         const cols = row.split(',');
+        const portfolio = cols[0];
         const type = cols[1];
         const time = cols[2];
         const amount = cols[3];
         const balance = cols[4];
         const currency = cols[5];
 
-        if (currency !== 'ADA') {
-          return;
-        }
+        // if (currency !== 'ADA') {
+        //   return;
+        // }
 
         if (currencies.indexOf(currency) === -1) {
           currencies.push(currency);
         }
 
-        if (!(currency in balances)) {
-          balances[currency] = parseFloat(amount);
-        } else {
-          balances[currency] += parseFloat(amount);
+        if (!(portfolio in portfolios)) {
+          portfolios[portfolio] = {};
         }
+
+        if (!(currency in portfolios[portfolio])) {
+          portfolios[portfolio][currency] = {
+            balance: currencyFn(amount),
+          };
+        } else {
+          portfolios[portfolio][currency].balance = portfolios[portfolio][currency].balance.add(amount);
+        }
+
+        // if (!(currency in balances)) {
+        //   // balances[currency] = parseFloat(amount);
+        //   balances[currency] = currencyFn(amount);
+        // } else {
+        //   // balances[currency] += parseFloat(amount);
+        //   balances[currency] = balances[currency].add(amount);
+        // }
 
         csv2021Rows[time] = {
           cols,
@@ -71,8 +89,13 @@ http.createServer(function (req, res) {
       }
     });
 
-    console.log(currencies);
-    console.log(balances);
+    Object.keys(portfolios).forEach(portfolio => {
+      console.log(portfolio);
+      console.log(portfolios[portfolio])
+    });
+
+    // console.log(currencies);
+    // console.log(balances);
 
     html = buildHtml(csv2021Rows);
 
