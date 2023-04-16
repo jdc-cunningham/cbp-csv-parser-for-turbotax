@@ -3,8 +3,8 @@ import './tabs.css';
 
 const Tabs = (props) => {
   const { transactions, activeYear, setActiveYear, activeCurrency, setActiveCurrency } = props;
-  const years = Object.keys(transactions);
-  const currencies = (transactions[activeYear] && Object.keys(transactions[activeYear]).filter(currency => currency !== 'year' && currency !== 'USD')) || [];
+  const years = [transactions.year] || [];
+  const currencies = transactions?.currencies || [];
 
   console.log(currencies, activeCurrency);
 

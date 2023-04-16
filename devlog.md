@@ -18,6 +18,25 @@ I don't feel great but will move forward
 
 there is a pattern, match match fee
 
+6:08 PM
+
+ahh man... I thought I had it... here's an edge case where different portfolios execute at the same time
+
+```
+Shorts	match	2021-01-22T19:38:57.796Z	-127.3	  146.6637925	USD
+default	match	2021-01-22T19:38:57.796Z	-77.05	  2.332368061	USD
+Shorts	match	2021-01-22T19:38:57.796Z	0.0038	  0.03515	    BTC
+default	match	2021-01-22T19:38:57.796Z	0.0023	  0.06202005	BTC
+default	fee	  2021-01-22T19:38:57.796Z	-0.269675	2.062693061	USD
+Shorts	fee	  2021-01-22T19:38:57.796Z	-0.44555	146.2182425	USD
+```
+
+That f's up my previous 3 group logic
+
+Concern is... I could group by portfolio under the date group... I could also just group these transactions together since they occurred at the same time
+
+I'll try that (portfolio group under date) vs. combine
+
 
 
 ---

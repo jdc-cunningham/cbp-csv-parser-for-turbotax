@@ -20,13 +20,12 @@ const App = () => {
     axios.get('http://localhost:8080/')
       .then(function (response) {
         // handle success
+        console.log(response);
         if (Object.keys(response?.data)) {
           setActiveYear(response.data.year);
           setTransactions(prevState => ({
             ...prevState,
-            [response.data.year] : {
-              ...response.data
-            },
+            ...response.data,
           }));
         }
       })
