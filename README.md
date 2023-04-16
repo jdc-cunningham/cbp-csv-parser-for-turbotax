@@ -1,3 +1,5 @@
+### Status: Incomplete
+
 ### About
 
 This is a web-based CSV parser to transform an exported account CSV file (Portfolio All, Account All) from Coinbase Pro for import into Turbotax.

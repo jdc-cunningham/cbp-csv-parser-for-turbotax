@@ -80,6 +80,20 @@ I am aware that I need to not worry about finishing this app and worry about get
 
 I've been procrastinating on this because it's such a big thing to do for me correctly parsing the thousands of rows in these two spreadsheets.
 
+Quick insights would be good, click a tab and see if it has any left over in this year
+
+two tabs/hierarchy: year, currency
+
+portfolio is inside each currency... not sure if that's a good design, I need to see things happen in order timewise
+
+Yeah... I may just skip this all and get the job done... my mind is getting crappier and crappier over time
+
+I have till Monday I'd say, Tuesday
+
+rough ideas/designs
+
+<img src="./sketches.JPG"/>
+
 ---
 
 ### 04/14/2023

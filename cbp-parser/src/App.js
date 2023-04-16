@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './css-reset.css';
 import './App.css';
 import axios from 'axios';
+import Tabs from './components/tabs/tabs';
 
 const App = () => {
   const [portfolios, setPortfolios] = useState({}); // {year: portfolios}
@@ -34,7 +35,7 @@ const App = () => {
 
   return (
     <div className="App">
-      
+      <Tabs portfolios={portfolios} />
     </div>
   );
 }
