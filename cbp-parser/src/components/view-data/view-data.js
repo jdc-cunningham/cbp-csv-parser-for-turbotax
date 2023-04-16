@@ -8,7 +8,7 @@ const ViewData = (props) => {
     Object.keys(transactions[activeYear][activeCurrency].transactions).map((time, index) => {
       const row = transactions[activeYear][activeCurrency].transactions[time];
 
-      return <div key={index} className="ViewData__row">
+      return <div key={index} className={`ViewData__row  ${parseFloat(row.balance) === 0 ? 'zero' : ''}`}>
         <div className="ViewData__row-time">
           {time}
         </div>

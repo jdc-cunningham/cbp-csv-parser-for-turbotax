@@ -14,6 +14,10 @@
   padding: 0.25rem;
 }
 
+.ViewData__row.zero {
+  background-color: #FFFF8F;
+}
+
 .ViewData__row:not(:last-of-type) {
   border-bottom: 1px solid #ccc;;
 }
