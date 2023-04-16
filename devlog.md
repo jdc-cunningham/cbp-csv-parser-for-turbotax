@@ -156,6 +156,20 @@ Then it'll just build a new state in the web app
 
 ... hmm Idk, I think I do have to preparse the cost
 
+oh... the timestamps are grouped together (same)... so buy/sell the timestamps lineup
+
+Damn... I organized this wrong, I'll have to break the current parse flow
+
+I'll have to group by timestamp first, then group by currency, all the while keeping track of costs
+
+10:37 PM
+
+damn starting to feel spent, once I eat I'm pretty much f'd so need to get the main stuff done now
+
+11:13 PM
+
+got sidetracked, will see about continuing
+
 ---
 
 ### 04/14/2023

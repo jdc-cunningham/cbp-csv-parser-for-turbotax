@@ -30,45 +30,69 @@ function buildHtml(rows) {
 const parseCsv = (csvPath) => {
   return new Promise(resolve => {
     fs.readFile(csvPath, "utf-8", (err, data) => {
-      const transactions = {};
-      const currencies = [];
       const rows = data.split('\n');
 
       rows.shift(); // remove headers
 
-      const year = rows[0][2].split('-')[0];
-      transactions['year'] = year;
+      const transactionGroups = {};
+
+      let year = '';
 
       rows.forEach((row, index) => {
         if (row.length) {
           const cols = row.split(',');
-          const portfolio = cols[0];
-          const type = cols[1];
           const time = cols[2];
-          const amount = cols[3];
-          const balance = cols[4];
-          const currency = cols[5];
-  
-          if (!(currency in transactions)) {
-            transactions[currency] = {
-              balance: 0,
-              transactions: {}
-            };
+
+          if (!year) {
+            year = time.split('-')[0];
           }
 
-          if (currencies.indexOf(currency) === -1) {
-            currencies.push(currency);
+          if (!(time in transactionGroups)) {
+            transactionGroups[time] = [
+              row,
+            ];
+          } else {
+            transactionGroups[time].push(row)
           }
-  
-          transactions[currency].transactions[time] = {
-            type,
-            amount,
-            balance
-          };
         }
       });
 
-      console.log(currencies);
+      const transactions = {
+        year,
+      };
+
+      // const currencies = [];
+
+      Object.keys(transactionGroups).forEach((transactionGroup, index) => {
+      //   if (row.length) {
+      //     const cols = row.split(',');
+      //     const portfolio = cols[0];
+      //     const type = cols[1];
+      //     const time = cols[2];
+      //     const amount = cols[3];
+      //     const balance = cols[4];
+      //     const currency = cols[5];
+  
+      //     if (!(currency in transactions)) {
+      //       transactions[currency] = {
+      //         balance: 0,
+      //         transactions: {}
+      //       };
+      //     }
+
+      //     if (currencies.indexOf(currency) === -1) {
+      //       currencies.push(currency);
+      //     }
+  
+      //     transactions[currency].transactions[time] = {
+      //       type,
+      //       amount,
+      //       balance
+      //     };
+      //   }
+      });
+
+      // console.log(currencies);
   
       resolve(transactions);
     });
