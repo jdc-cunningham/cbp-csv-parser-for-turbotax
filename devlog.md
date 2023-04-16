@@ -37,6 +37,18 @@ Concern is... I could group by portfolio under the date group... I could also ju
 
 I'll try that (portfolio group under date) vs. combine
 
+6:23 PM
+
+I need to get this done today... so I'm going to skip the front end stuff and just do it with an API
+
+I know where the previous year ended with regard to how much BTC/ETH I had...
+
+- [ ] verify left over crypto from 2021
+- [ ] find cost basis for amount crypto from 2021
+- [ ] process 2022 transactions
+
+I have to get this done today, since I have to study for an interview
+
 
 
 ---
