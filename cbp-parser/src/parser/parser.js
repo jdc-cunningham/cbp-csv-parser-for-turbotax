@@ -1,32 +1,6 @@
 const fs = require("fs");
 const http = require('http');
 const currencyFn = require('currency.js');
-const { prototype } = require("events");
-
-function buildHtml(rows) {
-  var header = '';
-  var body = '';
-
-  Object.keys(rows).forEach((txTime, index) => {
-    const row = rows[txTime];
-
-    if (index === 0) {
-      console.log(row);
-    }
-
-    let bgColor = '';
-
-    if (row.type === 'deposit') {
-      bgColor = '#FFFF8F';
-    }
-
-    body += `<div style="background-color: ${bgColor}">${row.cols[5]}, ${row.cols[3]}</div>`;
-  });
-
-  return '<!DOCTYPE html>'
-    + '<html><head>' + header + '</head><body>' + body + '</body></html>';
-};
-
 
 const parseCsvOld = (csvPath) => {
 
@@ -69,6 +43,14 @@ const parseCsvOld = (csvPath) => {
           portfolios[portfolio][currency].balance = portfolios[portfolio][currency].balance.add(amount);
         }
 
+        // if (!(currency in balances)) {
+        //   // balances[currency] = parseFloat(amount);
+        //   balances[currency] = currencyFn(amount);
+        // } else {
+        //   // balances[currency] += parseFloat(amount);
+        //   balances[currency] = balances[currency].add(amount);
+        // }
+
         csv2021Rows[time] = {
           cols,
           type
@@ -86,7 +68,7 @@ const parseCsvOld = (csvPath) => {
   });
 }
 
-const parseCsv = (csvPath) => {
+export const parseCbpCsv = (csvPath) => {
   return new Promise(resolve => {
     fs.readFile(csvPath, "utf-8", (err, data) => {
       const portfolios = {};
@@ -134,28 +116,3 @@ const parseCsv = (csvPath) => {
     });
   });
 }
-
-const makeRows = (portfolios) =>
-  Object.keys(portfolios).map(portfolio => (
-    `<div>${portfolio}</div>`
-  )).join('');
-
-http.createServer(async (req, res) => {
-  if (req.url !== "/") { // prevent double calls eg. favicon
-    return;
-  }
-
-  // let html = "";
-
-  // html = buildHtml(csv2021Rows);
-
-  const portfolios = await parseCsv("../csv-files/2021-account-statement.csv");
-
-  res.writeHead(200, {
-    // 'Content-Type': 'text/html',
-    'Content-Type': 'application/json',
-    'Expires': new Date().toUTCString()
-  });
-
-  res.end(JSON.stringify(portfolios));
-}).listen(8080);

@@ -1,4 +1,4 @@
-04/15/2023
+### 04/15/2023
 
 5:07 PM
 
@@ -66,7 +66,17 @@ hmm.... I was trying not to use React for this project but might as well
 
 Helps for producing UIs
 
-04/14/2023
+7:12 PM
+
+I could exclude fees automatically (some toggle) to reduce displayed rows
+
+Also thought of infinite scroll type deal with empty placeholders above for performance but it's all just text idk...
+
+Ahh damn I do need a temporary API till I'm using the drag-drop file reader
+
+---
+
+### 04/14/2023
 
 I have been procrastinating on this (and job searching/interviewing)
 
@@ -127,7 +137,9 @@ I'm not really being productive since I slept poorly but using `currency.js` see
 
 the other issue is keeping track of where stuff goes in what portfolio and FIFO order of transactions
 
-04/05/2023
+---
+
+### 04/05/2023
 
 I'm reminded of what good code is when I work on my old code and I want to scream lmao.
 
