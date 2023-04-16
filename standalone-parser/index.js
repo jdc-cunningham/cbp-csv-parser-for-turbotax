@@ -63,7 +63,12 @@ const parseCsv = (csvPath) => {
 
       // const currencies = [];
 
-      Object.keys(transactionGroups).forEach((transactionGroup, index) => {
+      Object.keys(transactionGroups).forEach((transactionTime, index) => {
+        if (index === 0) {
+          console.log(transactionTime);
+          console.log(transactionGroups[transactionTime]);
+        }
+
       //   if (row.length) {
       //     const cols = row.split(',');
       //     const portfolio = cols[0];
@@ -113,7 +118,11 @@ http.createServer(async (req, res) => {
 
   // html = buildHtml(csv2021Rows);
 
-  const portfolios = await parseCsv("../csv-files/2021-account-statement.csv");
+  await parseCsv("../csv-files/2021-account-statement.csv");
+
+  const portfolios = {};
+
+  // const portfolios = await parseCsv("../csv-files/2021-account-statement.csv");
 
   // CORS
   // https://stackoverflow.com/a/54309023/2710227

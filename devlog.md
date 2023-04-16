@@ -1,3 +1,27 @@
+### 04/16/2023
+
+5:07 PM
+
+wtf... this is not on purpose (same time as yesterday)
+
+I actually slept like 3 hours so I should get back onto a normal sleep pattern
+
+going to work on this again, I have to get this done/file my 2022 taxes
+
+I've been stuck/dreading this part
+
+I have to regroup the original data by transaction time, then if it's not a deposit/withdrawal figure out the cost basis of the currency so I can determine gains from buy/sell following FIFO
+
+I don't feel great but will move forward
+
+- [ ] get cost basis for buy/sale
+
+there is a pattern, match match fee
+
+
+
+---
+
 ### 04/15/2023
 
 5:07 PM
