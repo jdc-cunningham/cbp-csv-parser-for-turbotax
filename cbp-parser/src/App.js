@@ -5,23 +5,28 @@ import axios from 'axios';
 import Tabs from './components/tabs/tabs';
 
 const App = () => {
-  const [portfolios, setPortfolios] = useState({}); // {year: portfolios}
+  const [transactions, setTransactions] = useState({});
+  const [activeYear, setActiveYear] = useState((new Date().getFullYear()) - 1);
+  const [activeCurrency, setActiveCurrency] = useState('');
 
   useEffect(() => {
-    if (Object.keys(portfolios).length) {
-      console.log(portfolios);
+    if (Object.keys(transactions).length) {
+      console.log(transactions);
     }
-  }, [portfolios]);
+  }, [transactions]);
 
   useEffect(() => {
     axios.get('http://localhost:8080/')
       .then(function (response) {
         // handle success
         if (Object.keys(response?.data)) {
-          setPortfolios(portfolios => ({
-            ...portfolios,
-            ...response.data,
-          }))
+          setActiveYear(response.data.year);
+          setTransactions(prevState => ({
+            ...prevState,
+            [response.data.year] : {
+              ...response.data
+            },
+          }));
         }
       })
       .catch(function (error) {
@@ -35,7 +40,13 @@ const App = () => {
 
   return (
     <div className="App">
-      <Tabs portfolios={portfolios} />
+      <Tabs
+        transactions={transactions}
+        activeYear={activeYear}
+        setActiveYear={setActiveYear}
+        activeCurrency={activeCurrency}
+        setActiveCurrency={setActiveCurrency}
+      />
     </div>
   );
 }

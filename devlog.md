@@ -94,6 +94,24 @@ rough ideas/designs
 
 <img src="./sketches.JPG"/>
 
+I don't want to build this app, but I think I need to in order to do this parsing/tracing of past transactions
+
+8:20 PM
+
+Gondor calls for aid (Metallica)
+
+Time to force myself into the zone, autozone
+
+Actually I'll listen to Korn, let's goooooo
+
+This is the thing I have to do today
+
+Reeeee Spotify's UI design changed
+
+I did realize grouping by portfolio is not a good idea (need to do year -> currency) for FIFO
+
+Although there is the matter of selling what's in the portfolio vs. selling it somewhere else unless transferred
+
 ---
 
 ### 04/14/2023

@@ -27,69 +27,10 @@ function buildHtml(rows) {
     + '<html><head>' + header + '</head><body>' + body + '</body></html>';
 };
 
-
-const parseCsvOld = (csvPath) => {
-
-  fs.readFile("2021-account-statement.csv", "utf-8", (err, data) => {
-    const csv2021Rows = {};
-    const currencies = [];
-    const balances = {};
-    const portfolios = {};  
-    const rows = data.split('\n');
-
-    rows.shift(); // remove headers
-
-    rows.forEach(row => {
-      if (row.length) {
-        const cols = row.split(',');
-        const portfolio = cols[0];
-        const type = cols[1];
-        const time = cols[2];
-        const amount = cols[3];
-        const balance = cols[4];
-        const currency = cols[5];
-
-        // if (currency !== 'ADA') {
-        //   return;
-        // }
-
-        if (currencies.indexOf(currency) === -1) {
-          currencies.push(currency);
-        }
-
-        if (!(portfolio in portfolios)) {
-          portfolios[portfolio] = {};
-        }
-
-        if (!(currency in portfolios[portfolio])) {
-          portfolios[portfolio][currency] = {
-            balance: currencyFn(amount),
-          };
-        } else {
-          portfolios[portfolio][currency].balance = portfolios[portfolio][currency].balance.add(amount);
-        }
-
-        csv2021Rows[time] = {
-          cols,
-          type
-        }
-      }
-    });
-
-    Object.keys(portfolios).forEach(portfolio => {
-      console.log(portfolio);
-      console.log(portfolios[portfolio])
-    });
-
-    // console.log(currencies);
-    // console.log(balances);
-  });
-}
-
 const parseCsv = (csvPath) => {
   return new Promise(resolve => {
     fs.readFile(csvPath, "utf-8", (err, data) => {
-      const portfolios = {};
+      const transactions = {};
       const currencies = [];
       const rows = data.split('\n');
   
@@ -109,15 +50,11 @@ const parseCsv = (csvPath) => {
 
           if (index === 0) {
             year = time.split('-')[0];
-            portfolios['year'] = year;
+            transactions['year'] = year;
           }
   
-          if (!(portfolio in portfolios)) {
-            portfolios[portfolio] = {}
-          }
-  
-          if (!(currency in portfolios[portfolio])) {
-            portfolios[portfolio][currency] = {
+          if (!(currency in transactions)) {
+            transactions[currency] = {
               balance: 0,
               transactions: {}
             };
@@ -127,7 +64,7 @@ const parseCsv = (csvPath) => {
             currencies.push(currency);
           }
   
-          portfolios[portfolio][currency].transactions[time] = {
+          transactions[currency].transactions[time] = {
             type,
             amount,
             balance
@@ -137,7 +74,7 @@ const parseCsv = (csvPath) => {
 
       console.log(currencies);
   
-      resolve(portfolios);
+      resolve(transactions);
     });
   });
 }
@@ -148,7 +85,6 @@ const makeRows = (portfolios) =>
   )).join('');
 
 http.createServer(async (req, res) => {
-  console.log(req);
   if (req.url !== "/") { // prevent double calls eg. favicon
     return;
   }
