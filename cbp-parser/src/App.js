@@ -3,6 +3,7 @@ import './css-reset.css';
 import './App.css';
 import axios from 'axios';
 import Tabs from './components/tabs/tabs';
+import ViewData from './components/view-data/view-data';
 
 const App = () => {
   const [transactions, setTransactions] = useState({});
@@ -46,6 +47,11 @@ const App = () => {
         setActiveYear={setActiveYear}
         activeCurrency={activeCurrency}
         setActiveCurrency={setActiveCurrency}
+      />
+      <ViewData
+        activeCurrency={activeCurrency}
+        activeYear={activeYear}
+        transactions={transactions}
       />
     </div>
   );

@@ -6,4 +6,6 @@
   text-align: center;
   width: 100vw;
   height: 100vh;
+  padding: 0.25rem;
+  background-color: #505050;
 }

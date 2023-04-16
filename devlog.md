@@ -112,6 +112,14 @@ I did realize grouping by portfolio is not a good idea (need to do year -> curre
 
 Although there is the matter of selling what's in the portfolio vs. selling it somewhere else unless transferred
 
+9:33 PM
+
+It's funny I pretty much just made a spreadsheet in the web so far
+
+<img src="./ui-base.JPG"/>
+
+
+
 ---
 
 ### 04/14/2023
