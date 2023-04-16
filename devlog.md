@@ -18,6 +18,54 @@ I could try charting... since that would show me where stuff goes up/down...
 
 Still working on the grouping though
 
+6:24 PM
+
+need to start simple (few rows), check the math
+
+6:47 PM
+
+one issue is there are so many transactions... can't display them on a page using `divs`
+
+Either use textarea or something else... canvas maybe or svg but I don't know how to do that currently
+
+The whole point of what I'm trying to do is figure out the cost basis of any crypto I had left over from 2021 that I used in 2022.
+
+In the end what I would do is make a table that can be copy/pasted into a CSV for output...
+
+I don't think I can generate a CSV on client side, maybe.
+
+Damn it is possible
+
+https://stackoverflow.com/a/14966131/2710227
+
+I think what I can do is find the most recent (closest to 2022) where my BTC balance hit 0
+
+In 2021 I only messed around with BTC, ETH, ADA
+
+I had some ETH in 2022 so I had left over balance with that from 2021
+
+No ADA in 2022 so this one don't have to worry about... it's good that you can see it hit 0 in the spreadsheet, source of truth
+
+I'm close Margo...
+
+I'm thinking... a tabbed interface, of each currency, then you see the history (in a textarea)
+
+Maybe a tool to find most recent 0 balance to start from
+
+man... this project is like an insurmountable thing... I'm close, I've got it all "loaded in my ram" (brain) so to speak
+
+close to coming up with something that makes sense/useful
+
+I can manually step through it based on the most recent 0 balance of a currency as a starting point which would cut off a huge chunk of the spreadsheet to go through...
+
+but having it automated is nice and verifiable regarding accuracy
+
+7:05 PM
+
+hmm.... I was trying not to use React for this project but might as well
+
+Helps for producing UIs
+
 04/14/2023
 
 I have been procrastinating on this (and job searching/interviewing)
