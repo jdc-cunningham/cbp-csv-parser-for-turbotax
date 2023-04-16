@@ -118,7 +118,43 @@ It's funny I pretty much just made a spreadsheet in the web so far
 
 <img src="./ui-base.JPG"/>
 
+9:42 PM
 
+Here you can see how zero-balance highlighting is helpful to figure out where to start the FIFO
+
+<img src="./zero-balance-highlight.gif"/>
+
+I need to add a checkbox for every row, they're all selected by defualt, then uncheck/pick the ones to keep... a good way would be to make assumptions, like click at 500 row and keep the rest after that, or stop at this row 700, out of 1100 or something
+
+Damn... what's hard is the dollars used for the transaction are after...
+
+That would have to be preparsed so it shows up here in render as a column cost
+
+9:54 PM
+
+this one is good, all were sold in this year, none carried over into next year
+
+<img src="./all-sold.JPG"/>
+
+Damn great song All Nightmare Long, like these f'n crypto transactions and floating point precision
+
+10:05
+
+Damn... it is about order obviously... but yeah
+
+If you buy, USD is tracked first, if you sell the crypto currency is tracked first...
+
+10:10 PM
+
+Okay so I think I'll leave the current parser as is.
+
+Since I need to select where to start (previous year)
+
+Then it'll just build a new state in the web app
+
+10:16 PM
+
+... hmm Idk, I think I do have to preparse the cost
 
 ---
 

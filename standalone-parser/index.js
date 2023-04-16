@@ -33,9 +33,12 @@ const parseCsv = (csvPath) => {
       const transactions = {};
       const currencies = [];
       const rows = data.split('\n');
-  
+
       rows.shift(); // remove headers
-  
+
+      const year = rows[0][2].split('-')[0];
+      transactions['year'] = year;
+
       rows.forEach((row, index) => {
         if (row.length) {
           const cols = row.split(',');
@@ -45,13 +48,6 @@ const parseCsv = (csvPath) => {
           const amount = cols[3];
           const balance = cols[4];
           const currency = cols[5];
-
-          let year;
-
-          if (index === 0) {
-            year = time.split('-')[0];
-            transactions['year'] = year;
-          }
   
           if (!(currency in transactions)) {
             transactions[currency] = {

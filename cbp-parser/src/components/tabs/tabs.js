@@ -24,7 +24,11 @@ const Tabs = (props) => {
     <div className="Tabs">
       <div className="Tabs__currencies">
         {currencies.map((currency, index) => (
-          <div key={index} className={`Tabs__currency ${(activeCurrency === currency) ? 'active' : ''}`}>
+          <div
+            key={index}
+            className={`Tabs__currency ${(activeCurrency === currency) ? 'active' : ''}`}
+            onClick={() => setActiveCurrency(currency)}
+          >
             {currency}
           </div>
         ))}
