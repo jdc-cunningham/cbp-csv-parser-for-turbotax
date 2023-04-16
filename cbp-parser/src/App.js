@@ -1,12 +1,35 @@
 import { useState, useEffect } from 'react';
 import './css-reset.css';
 import './App.css';
-import { parseCbpCsv } from './parser/parser';
+import axios from 'axios';
 
 const App = () => {
+  const [portfolios, setPortfolios] = useState({}); // {year: portfolios}
+
   useEffect(() => {
-    const cbp2021 = parseCbpCsv('../../csv-files/2021-account-statement.csv');
-    console.log(cbp2021);
+    if (Object.keys(portfolios).length) {
+      console.log(portfolios);
+    }
+  }, [portfolios]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/')
+      .then(function (response) {
+        // handle success
+        if (Object.keys(response?.data)) {
+          setPortfolios(portfolios => ({
+            ...portfolios,
+            ...response.data,
+          }))
+        }
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+      .finally(function () {
+        // always executed
+      });
   }, []);
 
   return (

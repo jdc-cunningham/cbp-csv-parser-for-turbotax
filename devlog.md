@@ -74,6 +74,12 @@ Also thought of infinite scroll type deal with empty placeholders above for perf
 
 Ahh damn I do need a temporary API till I'm using the drag-drop file reader
 
+7:48 PM
+
+I am aware that I need to not worry about finishing this app and worry about getting my taxes done ha
+
+I've been procrastinating on this because it's such a big thing to do for me correctly parsing the thousands of rows in these two spreadsheets.
+
 ---
 
 ### 04/14/2023

@@ -95,7 +95,7 @@ const parseCsv = (csvPath) => {
   
       rows.shift(); // remove headers
   
-      rows.forEach(row => {
+      rows.forEach((row, index) => {
         if (row.length) {
           const cols = row.split(',');
           const portfolio = cols[0];
@@ -104,6 +104,13 @@ const parseCsv = (csvPath) => {
           const amount = cols[3];
           const balance = cols[4];
           const currency = cols[5];
+
+          let year;
+
+          if (index === 0) {
+            year = time.split('-')[0];
+            portfolios['year'] = year;
+          }
   
           if (!(portfolio in portfolios)) {
             portfolios[portfolio] = {}
@@ -141,6 +148,7 @@ const makeRows = (portfolios) =>
   )).join('');
 
 http.createServer(async (req, res) => {
+  console.log(req);
   if (req.url !== "/") { // prevent double calls eg. favicon
     return;
   }
@@ -150,6 +158,12 @@ http.createServer(async (req, res) => {
   // html = buildHtml(csv2021Rows);
 
   const portfolios = await parseCsv("../csv-files/2021-account-statement.csv");
+
+  // CORS
+  // https://stackoverflow.com/a/54309023/2710227
+  res.setHeader('Access-Control-Allow-Origin', '*'); /* @dev First, read about security */
+  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+  res.setHeader('Access-Control-Max-Age', 2592000); // 30 days
 
   res.writeHead(200, {
     // 'Content-Type': 'text/html',
