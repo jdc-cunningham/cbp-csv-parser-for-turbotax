@@ -11,26 +11,17 @@ const parseCsv = (csvPath) => {
 
       // store rows for sort by date key
       const txs = [];
-      const currencyZero = {};
 
       rows.forEach((row, index) => {
         const cols = row.split(',');
         const time = cols[2];
-
-        if (parseFloat(cols[4]) === 0) {
-          const currency = cols[5];
-          currencyZero[currency] = index + 2;
-        }
-
-        if (cols[1] === 'deposit' && cols[5] !== 'USD') {
-          console.log('deposit', cols);
-        }
 
         txs.push({
           date: time,
           cols,
         });
       });
+
       // sort rows by date
       // https://stackoverflow.com/a/12192544/2710227
       txs.sort(function(a, b) {
@@ -42,19 +33,89 @@ const parseCsv = (csvPath) => {
   });
 };
 
-const groupTxsByPortfolio = (txGroups) => {
+const groupTxsByOrderId = (txGroups) => {
   return new Promise(resolve => {
+    const txs = {};
+
     txGroups.forEach(txGroup => {
-      const cols = txGroup;
-      const portfolio = cols[0];
-      const type = cols[1];
-      const time = cols[2];
-      const amount = cols[3];
-      const balance = cols[4];
-      const unit = cols[5];
+      const cols = txGroup.cols;
+      const orderId = cols[8].trim();
+
+      // withdrawal and deposits don't have order ids
+      if (orderId && cols[1] !== 'fee') {
+        if (!(orderId in txs)) {
+          txs[orderId] = [];
+        }
+
+        txs[orderId].push(cols);
+      }
     });
+
+    resolve(txs);
   });
 };
+
+const groupTxsByFiat = (txRowsGrouped) => {
+  return new Promise(resolve => {
+    const txs = {};
+
+    Object.keys(txRowsGrouped).forEach(orderId => {
+      const txInfo = txRowsGrouped[orderId];
+
+      const row1Fiat = (txInfo[0][5] === 'USD');
+      const row2Fiat = (txInfo[1][5] === 'USD');
+
+      txs[orderId] = [];
+
+      if (row1Fiat) {
+        txs[orderId] = txInfo;
+      } else {
+        console.log('flipped', orderId);
+        txs[orderId] = [
+          txInfo[1],
+          txInfo[2]
+        ];
+      }
+    });
+
+    resolve(txs);
+  });
+}
+
+const groupTxsByEvent = (txRowsGrouped) => {
+  return new Promise(resolve => {
+    const buys = {};
+    const sells = {};
+
+    Object.keys(txRowsGrouped).forEach(orderId => {
+      // const txInfo = txRowsGrouped[orderId];
+      // const txInfoRow1Cols = txInfo[0];
+      // const txInfoRow2Cols = txInfo[1]; // due to order possibly being switched
+
+      // const isBuy1 = (txInfoRow1Cols[5] === 'USD' && txInfoRow1Cols[3] < 0);
+      // const isBuy2 = (txInfoRow2Cols[5] === 'USD' && txInfoRow2Cols[3] < 0);
+
+      // if (
+      //   isBuy1 ||
+      //   isBuy2
+      // ) {
+      //   let currency
+      //   if (isBuy1) {
+          
+      //   } else {
+        
+      //   }
+      // } else {
+      //   sells.push(txInfo);
+      // }
+    });
+
+    resolve({
+      buys,
+      sells
+    });
+  });
+}
 
 http.createServer(async (req, res) => {
   if (req.url !== "/") { // prevent double calls eg. favicon
@@ -62,27 +123,26 @@ http.createServer(async (req, res) => {
   }
 
   // process
-  // 1) store in arr of iso date keyed objects
-  // 2) sort by iso date key
-  // 3) (NO)sort by portfolio(NO)
-  // 4) sort by order of events
-  //   - this means in the given iso group
-  //     if USD is negative, means used to buy
-  // 5) group into buy/sells ordered by time with determined cost basis
+  // 1) store in arr of objects with iso date key
+  //    sort by iso date key
+  // 2) group by order id
+  // 3) order by crypto first
+  // 4) group into buy/sells with determined cost basis
 
   // 1
-  // const txRows = await parseCsv("../csv-files/CBP-2021-crop.csv");
-  const txRows = await parseCsv("../csv-files/2022-account-statement.csv");
-  
-  // for (let i = 0; i < 10; i++) {
-  //   console.log(txRows[i]);
-  // }
+  const txRows = await parseCsv("../csv-files/CBP-2021-crop.csv");
+  // const txRows = await parseCsv("../csv-files/2022-account-statement.csv");
 
   // 2
-  // const txGroupsOrder = await groupTxsByPortfolio(txGroups);
+  const txRowsGrouped = await groupTxsByOrderId(txRows);
 
   // 3
-  // const txGroupsOrder = await groupTxsByPortfolio(txGroups);
+  const txRowsOrderByFiat = await groupTxsByFiat(txRowsGrouped);
+
+  // 4
+  // const txGroupByEvent = await groupTxsByEvent(txRowsGrouped); // buy/sell
+
+  // console.log(txGroupByEvent.buys[0]);
 
   // 4
 

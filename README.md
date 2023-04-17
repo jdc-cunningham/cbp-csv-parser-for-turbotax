@@ -24,3 +24,13 @@ I'm also in general done screwing around with crypto other than having some just
 <img src="./basic-parsing-logic.png"/>
 
 Line 10 is an example of a sale.
+
+### Code entry point
+
+`standalone-parser/index.js` (only file used)
+
+This is using nodeJS to read and step through/parse the CSVs.
+
+If you bought crypto in the year prior to current tax year and sold them in the current tax year, you'll have to parse that CSV first, store in JS state to subtract with sales in current tax year.
+
+There is a front-end but not finished/schemas no longer match so it's broken.

@@ -54,6 +54,26 @@ I will get this done, even if I manually do it in small chunks
 
 back on
 
+4:35 PM
+
+making some progress
+
+4:55 PM
+
+distracted but starting the buy/sell groups
+
+5:00 PM
+
+Oh man... this was a good catch
+
+these partial events under same `orderId` ugh... need to check that
+
+<img src="./partial.JPG"/>
+
+I don't know... I was trying to make sure the rows were in order since there was a case where the time was out of order... but maybe the match, match, fee rows were not out of order
+
+Looking at this image though, the trade id is a better way to group
+
 
 
 ---
