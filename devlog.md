@@ -112,6 +112,26 @@ Idk why I forget I'm poor/in debt/not free
 
 Anyway back to this
 
+7:36 PM
+
+I already said this but the reason this is so hard is because I have two spreadsheets with 3434 and 1087 rows
+
+will finish this song... *WE'LL CARRRRYYYY ONNNN....*
+
+yeah maybe, I might be homeless lmao
+
+7:53 PM
+
+I'm losing the focus... might have to try again tomorrow, means less time to study ahh, long as I wake up near normal hours
+
+7:59 PM
+
+yeah... I'm gonna cook food and chill
+
+but once I get the cost basis of buys left over from 2021... then just build onto this array for 2022 and subtract sells against that in order
+
+I'll try more though to give myself a better chance tomorrow
+
 
 
 ---
