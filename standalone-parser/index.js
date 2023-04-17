@@ -11,17 +11,26 @@ const parseCsv = (csvPath) => {
 
       // store rows for sort by date key
       const txs = [];
+      const currencyZero = {};
 
-      rows.forEach(row => {
+      rows.forEach((row, index) => {
         const cols = row.split(',');
         const time = cols[2];
+
+        if (parseFloat(cols[4]) === 0) {
+          const currency = cols[5];
+          currencyZero[currency] = index + 2;
+        }
+
+        if (cols[1] === 'deposit' && cols[5] !== 'USD') {
+          console.log('deposit', cols);
+        }
 
         txs.push({
           date: time,
           cols,
         });
       });
-
       // sort rows by date
       // https://stackoverflow.com/a/12192544/2710227
       txs.sort(function(a, b) {
@@ -62,12 +71,15 @@ http.createServer(async (req, res) => {
   // 5) group into buy/sells ordered by time with determined cost basis
 
   // 1
-  const txRows = await parseCsv("../csv-files/2021-account-statement.csv");
-  console.log(txRows[0]);
+  // const txRows = await parseCsv("../csv-files/CBP-2021-crop.csv");
+  const txRows = await parseCsv("../csv-files/2022-account-statement.csv");
+  
+  // for (let i = 0; i < 10; i++) {
+  //   console.log(txRows[i]);
+  // }
 
   // 2
-  const txGroups = await groupTxs(txRows);
-  console.log(txGroups[0]);
+  // const txGroupsOrder = await groupTxsByPortfolio(txGroups);
 
   // 3
   // const txGroupsOrder = await groupTxsByPortfolio(txGroups);

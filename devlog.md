@@ -1,3 +1,58 @@
+### 04/17/2023
+
+2:33 PM
+
+ahh man... supposed to be studying right now but this is still not done, have to file today
+
+2:49 PM
+
+I need to get this done... starting over the looping again
+
+- sort by date ascending
+- group by portfolio (only because of random order)
+- group into cost basis blocks for sell subtraction
+
+Alright accountability... by time
+
+3:00 PM
+
+3:07 PM
+
+a problem is the deposits... where did they come from, how much were these units?
+
+at least in 2021 any transfers were used by the last time BTC hit 0
+
+row 2837 is last time ETH hits 0
+
+advance to 2840 which is after that transaction (3 row group match match fee)
+
+3082 is where BTC was at 0
+
+3:22 PM
+
+Okay I cut down the 2021 spreadsheet to only include what went into 2022
+
+3:25 PM
+
+ahh man there are 3 deposits still... so I'll have to use CBP API to figure out where these came from... it's probable they're just from a portfolio
+
+oh no was not loading the right one... 2022 has em though
+
+... maybe not
+
+okay thankfully there are no deposits after 0 balance, none in 2021 crop and none in 2022 so that makes things easier
+
+I can just count up as things happen
+
+3:34 PM
+
+I need to take a quick break
+
+I will get this done, even if I manually do it in small chunks
+
+
+---
+
 ### 04/16/2023
 
 5:07 PM
