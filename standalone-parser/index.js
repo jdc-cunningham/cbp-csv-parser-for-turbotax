@@ -1,31 +1,6 @@
 const fs = require("fs");
 const http = require('http');
 const currencyFn = require('currency.js');
-const { prototype } = require("events");
-
-function buildHtml(rows) {
-  var header = '';
-  var body = '';
-
-  Object.keys(rows).forEach((txTime, index) => {
-    const row = rows[txTime];
-
-    if (index === 0) {
-      console.log(row);
-    }
-
-    let bgColor = '';
-
-    if (row.type === 'deposit') {
-      bgColor = '#FFFF8F';
-    }
-
-    body += `<div style="background-color: ${bgColor}">${row.cols[5]}, ${row.cols[3]}</div>`;
-  });
-
-  return '<!DOCTYPE html>'
-    + '<html><head>' + header + '</head><body>' + body + '</body></html>';
-};
 
 const parseCsv = (csvPath) => {
   return new Promise(resolve => {
@@ -34,107 +9,77 @@ const parseCsv = (csvPath) => {
 
       rows.shift(); // remove headers
 
-      const transactionGroups = {};
+      // store rows for sort by date key
+      const txs = [];
 
-      let year = '';
+      rows.forEach(row => {
+        const cols = row.split(',');
+        const time = cols[2];
 
-      rows.forEach((row, index) => {
-        if (row.length) {
-          const cols = row.split(',');
-          const time = cols[2];
-
-          if (!year) {
-            year = time.split('-')[0];
-          }
-
-          if (!(time in transactionGroups)) {
-            transactionGroups[time] = [
-              row,
-            ];
-          } else {
-            transactionGroups[time].push(row)
-          }
-        }
+        txs.push({
+          date: time,
+          cols,
+        });
       });
 
-      const transactions = {
-        year,
-      };
-
-      Object.keys(transactionGroups).forEach((transactionTime, index) => {
-        // const txEvents = transactionGroups[transactionTime];
-        // const firstRow = txEvents[0];
-        // const firstRowCols = firstRow.split(',');
-        // const firstRowType = firstRowCols[1];
-
-        // if (firstRowType === 'match') { // start of tx group
-        //   match = true;
-
-        //   let costBasis = 0; // this will be a source of error, but spreadsheet is source of truth (USD balance)
-        //   let eventType = '';
-
-        //   // loop over this group
-        //   // the match, match, fee is set by what changes first
-        //   // sold: BTC down, USD up
-        //   // bought: USD down, BTC up
-        //   const eventRow = txEvents[0];
-        //   const cols = eventRow.split(',');
-        //   const amount = cols[3];
-        //   const eventRowUnit = cols[5];
-        //   const eventRow2 = txEvents[1];
-        //   const eventRow2Cols = eventRow2.split(',');
-        //   const eventRow2Unit = eventRow2Cols[5];
-
-        //   let currency = '';
-
-        //   console.log(transactionTime, eventRowUnit, eventRow2Unit);
-
-        //   if (eventRowUnit === 'USD') { // bought
-        //     costBasis = amount;
-        //     eventType = 'buy';
-        //     currency = eventRow2Unit;
-        //   } else {
-        //     costBasis = eventRow2Cols[3];
-        //     eventType = 'sell';
-        //     currency = eventRowUnit;
-        //   }
-
-        //   if (!(currency in transactions) && currency !== 'USD') {
-        //     transactions[currency] = {};
-        //   }
-
-        //   transactions[currency][transactionTime] = {
-        //     type: eventType,
-        //     amount,
-        //     costBasis
-        //   }
-        // }
+      // sort rows by date
+      // https://stackoverflow.com/a/12192544/2710227
+      txs.sort(function(a, b) {
+        return (a.date < b.date) ? -1 : ((a.date > b.date) ? 1 : 0);
       });
-  
-      resolve(transactions);
+
+      resolve(txs);
     });
   });
-}
+};
 
-const makeRows = (portfolios) =>
-  Object.keys(portfolios).map(portfolio => (
-    `<div>${portfolio}</div>`
-  )).join('');
+const groupTxsByPortfolio = (txGroups) => {
+  return new Promise(resolve => {
+    txGroups.forEach(txGroup => {
+      const cols = txGroup;
+      const portfolio = cols[0];
+      const type = cols[1];
+      const time = cols[2];
+      const amount = cols[3];
+      const balance = cols[4];
+      const unit = cols[5];
+    });
+  });
+};
 
 http.createServer(async (req, res) => {
   if (req.url !== "/") { // prevent double calls eg. favicon
     return;
   }
 
-  // let html = "";
+  // process
+  // 1) store in arr of iso date keyed objects
+  // 2) sort by iso date key
+  // 3) (NO)sort by portfolio(NO)
+  // 4) sort by order of events
+  //   - this means in the given iso group
+  //     if USD is negative, means used to buy
+  // 5) group into buy/sells ordered by time with determined cost basis
 
-  // html = buildHtml(csv2021Rows);
+  // 1
+  const txRows = await parseCsv("../csv-files/2021-account-statement.csv");
+  console.log(txRows[0]);
 
-  // await parseCsv("../csv-files/2021-account-statement.csv");
+  // 2
+  const txGroups = await groupTxs(txRows);
+  console.log(txGroups[0]);
 
-  // const portfolios = {};
+  // 3
+  // const txGroupsOrder = await groupTxsByPortfolio(txGroups);
 
-  const portfolios = await parseCsv("../csv-files/2021-account-statement.csv");
+  // 4
+
+
+  // 5
+
+  const portfolios = {};
+
+  // const portfolios = await parseCsv("../csv-files/2021-account-statement.csv");
 
   // CORS
   // https://stackoverflow.com/a/54309023/2710227
@@ -143,7 +88,6 @@ http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Max-Age', 2592000); // 30 days
 
   res.writeHead(200, {
-    // 'Content-Type': 'text/html',
     'Content-Type': 'application/json',
     'Expires': new Date().toUTCString()
   });

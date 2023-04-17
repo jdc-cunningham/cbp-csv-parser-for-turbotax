@@ -49,6 +49,69 @@ I know where the previous year ended with regard to how much BTC/ETH I had...
 
 I have to get this done today, since I have to study for an interview
 
+6:33 PM
+
+Okay for 2021... I will tally up the events and if the balance of a cryptocurrency hits 0, start over with regard to counting cost basis
+
+I will not factor in portfolio other than matching values (due to non-guaranteed order)
+
+6:40 PM
+
+holy crap look at this one, 18 groups
+
+<img src="./18-same.JPG"/>
+
+6:48 PM
+
+omg... I just realized the balance of a currency eg. BTC could be 0 but only in a portfolio, has balances elsewhere... damn
+
+which againt portfolio is not supposed to be part of it... it's all part of CBP, the only place I use to screw around with crypto...
+
+okay... so I think I will still do a grouping of time -> portfolio
+
+but when processing I'll use time for FIFO no matter what portfolio it comes from since cost basis will be a shared thing... common
+
+the buys will be stored in arrays by amount and cost... that'll be used to figure out FIFO gain/loss
+
+ahh damn... I also forgot object keys are not guaranteed in order
+
+I think I need to sort the time column first before going through it
+
+7:05 PM
+
+ugh... this is where my brain falls short, I feel overwhelmed brain shuts down
+
+I don't know why I didn't think about date order before till I saw that the spreadsheet's order is not guaranteed
+
+7:23 PM
+
+I did have a thought (ooh do tell) if my math is right, then I should be able to verify it against the balance tracked in the spreadsheet
+
+the ultimate goal is to produce a spreadsheet like this
+
+```
+Currency Name	Purchase Date	Cost Basis Date Sold	 Proceeds
+BTC	          01/20/2022	  $100	     01/25/2022 -$50
+```
+
+which yeah... I lost more than $3K last year in crypto lmao dumbass
+
+but it's good now since I have no income to pay owed taxes so any reductions like losses or donations helps me
+
+I also paid $3K for an MRI in cash for them to tell me "your leg is fine" that was great
+
+I sold all of my camera gear (that I technically could not afford) to offset that
+
+At great losses too... $2K camera sold for 1K genius... but people did buy it
+
+sold my good lenses too damn, F4 Gs
+
+I wasted money elsewhere though clubs, drinking
+
+Idk why I forget I'm poor/in debt/not free
+
+Anyway back to this
+
 
 
 ---
