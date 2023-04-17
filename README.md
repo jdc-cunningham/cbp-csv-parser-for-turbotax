@@ -1,29 +1,26 @@
-### Status: Incomplete
+# Status: Incomplete
 
 ### About
 
-This is a web-based CSV parser to transform an exported account CSV file (Portfolio All, Account All) from Coinbase Pro for import into Turbotax.
+This is an unfinished parser that takes a CBP account CSV dump of all portfolios and outputs a CSV that can be uploaded into Turbotax for buy/sell gains/losses see an example of what that CSV would look like below.
 
-This is using a FIFO cost-basis method to generate the buy-sell rows. The application is visual in nature so that you can verify the values.
+```
+Currency Name	Purchase Date	Cost Basis Date Sold	 Proceeds
+BTC	          01/20/2022	  $100	     01/25/2022 -$50
+```
 
-### Try it
-Click on this <a href="https://jdc-cunningham.github.io/cbp-turbotax-csv-parser/">link</a> to go to the github hosted site. The source code for the GH pages is in the [docs folder](https://github.com/jdc-cunningham/cbp-turbotax-csv-parser/tree/master/docs).
+This needs to factor in the cost of deposits and similarly withdrawals.
 
-### Things to consider for accuracy
-* if you have an existing balance from a prior year, that CSV file has to be imported
-  * eg. currency bought in 2021 sold in 2022
-* not addressed:
-  * if you transferred in crypto that you didn't buy in CBP
-  * if you withdrew crypto from your wallet but did not sell it
+That's why this is not an easy thing to make.
 
-Also I will note the buys are batched with regard to the cost basis/proceeds rows for Turbotax. So if you bought some currency at 04/01/2021 and 04/02/2021, both of those total the amount sold on 04/03/2021, then there would be 1 row, the buy date being 04/01/2021(earliest) and sale date of 04/03/2021. You could instead have two rows with the sales separated/matching each buy row. The gains calculated in the end is the same but less rows in the Turbotax CSV.
+I was aiming to make this all completely client side but if you need to look up any transfers/withdrawals then you would need an API key for CBP.
 
-### Privacy
-This does not upload your CSV file somewhere, your CSV file is read in browser using the `FileReader` API that can load a file in the browser and use it.
+As I write this, this is the last day to file taxes so I'm not interested in making this functional right now.
 
-### Disclaimer
-This is free software, no guarantees. I am not a tax expert or anything. The primary causes of errors include the things to consider list above and rounding/dealing with decimal places eg. 0.00000001 left over (used `currency.js` to try and address that).
+I'm also in general done screwing around with crypto other than having some just because.
 
-Use at your own risk.
+### Parsing logic
 
-Be sure to double check if the values generated make sense.
+<img src="./basic-parsing-logic.png"/>
+
+Line 10 is an example of a sale.
