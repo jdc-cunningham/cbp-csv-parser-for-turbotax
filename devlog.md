@@ -74,7 +74,45 @@ I don't know... I was trying to make sure the rows were in order since there was
 
 Looking at this image though, the trade id is a better way to group
 
+5:29 PM
 
+losing focus
+
+I think the order of the match, match, fee has to be guaranteed due to cause/effect... you either lose money (buy) or lose crypto (sell), which affect the opposite.
+
+5:48 PM
+
+oh man... the iso date sorting doesn't work
+
+6:00 PM
+
+no it is working...
+
+6:07 PM
+
+there are no cases where a first row, USD is greater than 0
+
+as in the event... if it's a gain, you see the crypto currency as first row
+
+it seems like that is honored
+
+6:11 PM
+
+I think this is guaranteed the event then cost/fee order for match, match, fee
+
+6:18 PM
+
+it was my trade Id object... I should use map
+
+wtf... it's still wrong
+
+6:23 PM
+
+oh map isn't used like an object
+
+6:30 PM
+
+oh man... now it's correct
 
 ---
 

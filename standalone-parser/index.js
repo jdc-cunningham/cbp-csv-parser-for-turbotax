@@ -33,21 +33,24 @@ const parseCsv = (csvPath) => {
   });
 };
 
-const groupTxsByOrderId = (txGroups) => {
+const groupTxsByTradeId = (txGroups) => {
   return new Promise(resolve => {
-    const txs = {};
+    const txs = new Map();
 
     txGroups.forEach(txGroup => {
       const cols = txGroup.cols;
-      const orderId = cols[8].trim();
+      const tradeId = cols[7].trim();
 
-      // withdrawal and deposits don't have order ids
-      if (orderId && cols[1] !== 'fee') {
-        if (!(orderId in txs)) {
-          txs[orderId] = [];
+      // withdrawal and deposits don't have trade ids
+      if (tradeId && cols[1] !== 'fee') {
+        if (!(txs.has(tradeId))) {
+          txs.set(tradeId, []);
         }
 
-        txs[orderId].push(cols);
+        txs.set(tradeId, [
+          ...txs.get(tradeId),
+          cols,
+        ]);
       }
     });
 
@@ -59,19 +62,19 @@ const groupTxsByFiat = (txRowsGrouped) => {
   return new Promise(resolve => {
     const txs = {};
 
-    Object.keys(txRowsGrouped).forEach(orderId => {
-      const txInfo = txRowsGrouped[orderId];
+    Object.keys(txRowsGrouped).forEach(tradeId => {
+      const txInfo = txRowsGrouped[tradeId];
 
       const row1Fiat = (txInfo[0][5] === 'USD');
       const row2Fiat = (txInfo[1][5] === 'USD');
 
-      txs[orderId] = [];
+      txs[tradeId] = [];
 
       if (row1Fiat) {
-        txs[orderId] = txInfo;
+        txs[tradeId] = txInfo;
       } else {
-        console.log('flipped', orderId);
-        txs[orderId] = [
+        // console.log('flipped', tradeId);
+        txs[tradeId] = [
           txInfo[1],
           txInfo[2]
         ];
@@ -82,32 +85,35 @@ const groupTxsByFiat = (txRowsGrouped) => {
   });
 }
 
+const getCostBasis = (txInfo) => {
+  
+}
+
 const groupTxsByEvent = (txRowsGrouped) => {
   return new Promise(resolve => {
-    const buys = {};
-    const sells = {};
+    const buys = [];
+    const sells = [];
 
-    Object.keys(txRowsGrouped).forEach(orderId => {
-      // const txInfo = txRowsGrouped[orderId];
-      // const txInfoRow1Cols = txInfo[0];
-      // const txInfoRow2Cols = txInfo[1]; // due to order possibly being switched
+    txRowsGrouped.forEach((trade, tradeId) => {
+      const txInfo = trade;
+      const currency = txInfo[0][5];
+      const amount = txInfo[0][3];
 
-      // const isBuy1 = (txInfoRow1Cols[5] === 'USD' && txInfoRow1Cols[3] < 0);
-      // const isBuy2 = (txInfoRow2Cols[5] === 'USD' && txInfoRow2Cols[3] < 0);
+      if (currency === 'USD' && parseFloat(amount) < 0) { // buy
+        buys.push({
+          tradeId,
+          txInfo
+        });
+      } else {
+        if (currency === 'USD' && parseFloat(amount) > 0) {
+          console.log('error');
+        }
 
-      // if (
-      //   isBuy1 ||
-      //   isBuy2
-      // ) {
-      //   let currency
-      //   if (isBuy1) {
-          
-      //   } else {
-        
-      //   }
-      // } else {
-      //   sells.push(txInfo);
-      // }
+        sells.push({
+          tradeId,
+          txInfo
+        });
+      }
     });
 
     resolve({
@@ -134,15 +140,17 @@ http.createServer(async (req, res) => {
   // const txRows = await parseCsv("../csv-files/2022-account-statement.csv");
 
   // 2
-  const txRowsGrouped = await groupTxsByOrderId(txRows);
+  const txRowsGrouped = await groupTxsByTradeId(txRows);
+
+  // console.log(txRowsGrouped['225350257']);
 
   // 3
-  const txRowsOrderByFiat = await groupTxsByFiat(txRowsGrouped);
+  // const txRowsOrderByFiat = await groupTxsByFiat(txRowsGrouped);
 
   // 4
-  // const txGroupByEvent = await groupTxsByEvent(txRowsGrouped); // buy/sell
+  const txGroupByEvent = await groupTxsByEvent(txRowsGrouped); // buy/sell
 
-  // console.log(txGroupByEvent.buys[0]);
+  console.log(txGroupByEvent.buys[0]);
 
   // 4
 
