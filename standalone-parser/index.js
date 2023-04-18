@@ -85,10 +85,6 @@ const groupTxsByFiat = (txRowsGrouped) => {
   });
 }
 
-const getCostBasis = (txInfo) => {
-  
-}
-
 const groupTxsByEvent = (txRowsGrouped) => {
   return new Promise(resolve => {
     const buys = [];
@@ -127,6 +123,12 @@ const groupTxsByEvent = (txRowsGrouped) => {
   });
 }
 
+const processBuySellGroups = (txRowsGroupedByEvent) => {
+  return new Promise(resolve => {
+    
+  });
+}
+
 http.createServer(async (req, res) => {
   if (req.url !== "/") { // prevent double calls eg. favicon
     return;
@@ -148,10 +150,10 @@ http.createServer(async (req, res) => {
   const txRowsGrouped = await groupTxsByTradeId(txRows);
 
   // 3
-  const txGroupByEvent = await groupTxsByEvent(txRowsGrouped); // buy/sell
+  const txRowsGroupedByEvent = await groupTxsByEvent(txRowsGrouped); // buy/sell
 
   // 4
-  await processBuySellGroups(txGroupByEvent);
+  await processBuySellGroups(txRowsGroupedByEvent);
 
   const portfolios = {};
 

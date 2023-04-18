@@ -154,6 +154,10 @@ Looped over sales, and met the sale amount by adding buys (removing from buy arr
 
 Then tracking the sales along with what is left after all sales are done
 
+7:22 PM
+
+yeah I feel spent already damn, I've made progress though
+
 ---
 
 ### 04/16/2023
