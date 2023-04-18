@@ -102,16 +102,20 @@ const groupTxsByEvent = (txRowsGrouped) => {
       if (currency === 'USD' && parseFloat(amount) < 0) { // buy
         buys.push({
           tradeId,
-          txInfo
+          txInfo,
+          size: txInfo[1][3],
+          cost: amount,
         });
       } else {
         if (currency === 'USD' && parseFloat(amount) > 0) {
-          console.log('error');
+          throw Error('match, match, fee: order is wrong for group');
         }
 
         sells.push({
           tradeId,
-          txInfo
+          txInfo,
+          size: amount,
+          proceeds: txInfo[1][3],
         });
       }
     });
@@ -132,8 +136,9 @@ http.createServer(async (req, res) => {
   // 1) store in arr of objects with iso date key
   //    sort by iso date key
   // 2) group by order id
-  // 3) order by crypto first
-  // 4) group into buy/sells with determined cost basis
+  // 3) group into buy/sells with determined cost basis
+  // 4) loop over sales against buys, use up buy rows to equate amount of crypto sold
+  //    track remainder for future sales or next year
 
   // 1
   const txRows = await parseCsv("../csv-files/CBP-2021-crop.csv");
@@ -142,24 +147,13 @@ http.createServer(async (req, res) => {
   // 2
   const txRowsGrouped = await groupTxsByTradeId(txRows);
 
-  // console.log(txRowsGrouped['225350257']);
-
   // 3
-  // const txRowsOrderByFiat = await groupTxsByFiat(txRowsGrouped);
-
-  // 4
   const txGroupByEvent = await groupTxsByEvent(txRowsGrouped); // buy/sell
 
-  console.log(txGroupByEvent.buys[0]);
-
   // 4
-
-
-  // 5
+  await processBuySellGroups(txGroupByEvent);
 
   const portfolios = {};
-
-  // const portfolios = await parseCsv("../csv-files/2021-account-statement.csv");
 
   // CORS
   // https://stackoverflow.com/a/54309023/2710227

@@ -114,6 +114,46 @@ oh map isn't used like an object
 
 oh man... now it's correct
 
+6:44 PM
+
+I still have more multiple zero BTC rows
+
+247, 236216268 started buying again
+
+351
+
+188034937 ETH first row no 0
+
+hits 0 here 97133362
+
+I have 5 hours left to get this done... less than that to finish the rest of it/file
+
+technically I also have tomorrow too to do this
+
+April 18 at midnight
+
+I do have to stop to study but I can still go some more
+
+6:52 PM
+
+So right now I have buy/sell groups for 2021... which I have to process in order to determine how much I have left (cost basis) that goes into 2022.
+
+I'll work till 8
+
+6:58 PM
+
+I have to remember how this works the cost basis
+
+- have to combine buys if less than what was sold
+- average the cost basis of these
+- determine gain/loss
+
+Oh yeah I think I remember now how I did this
+
+Looped over sales, and met the sale amount by adding buys (removing from buy array as they are used)
+
+Then tracking the sales along with what is left after all sales are done
+
 ---
 
 ### 04/16/2023
