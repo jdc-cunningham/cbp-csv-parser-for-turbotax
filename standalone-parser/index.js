@@ -39,7 +39,7 @@ const groupTxsByTradeId = (txGroups) => {
 
     txGroups.forEach(txGroup => {
       const cols = txGroup.cols;
-      const tradeId = cols[7].trim();
+      const tradeId = cols[7] ? cols[7].trim() : '';
 
       // withdrawal and deposits don't have trade ids
       if (tradeId && cols[1] !== 'fee') {
@@ -58,33 +58,6 @@ const groupTxsByTradeId = (txGroups) => {
   });
 };
 
-const groupTxsByFiat = (txRowsGrouped) => {
-  return new Promise(resolve => {
-    const txs = {};
-
-    Object.keys(txRowsGrouped).forEach(tradeId => {
-      const txInfo = txRowsGrouped[tradeId];
-
-      const row1Fiat = (txInfo[0][5] === 'USD');
-      const row2Fiat = (txInfo[1][5] === 'USD');
-
-      txs[tradeId] = [];
-
-      if (row1Fiat) {
-        txs[tradeId] = txInfo;
-      } else {
-        // console.log('flipped', tradeId);
-        txs[tradeId] = [
-          txInfo[1],
-          txInfo[2]
-        ];
-      }
-    });
-
-    resolve(txs);
-  });
-}
-
 const groupTxsByEvent = (txRowsGrouped) => {
   return new Promise(resolve => {
     const buys = [];
@@ -101,6 +74,7 @@ const groupTxsByEvent = (txRowsGrouped) => {
           txInfo,
           size: txInfo[1][3],
           cost: amount,
+          currency: txInfo[1][5],
         });
       } else {
         if (currency === 'USD' && parseFloat(amount) > 0) {
@@ -112,6 +86,7 @@ const groupTxsByEvent = (txRowsGrouped) => {
           txInfo,
           size: amount,
           proceeds: txInfo[1][3],
+          currency,
         });
       }
     });
@@ -123,9 +98,35 @@ const groupTxsByEvent = (txRowsGrouped) => {
   });
 }
 
-const processBuySellGroups = (txRowsGroupedByEvent) => {
+const groupBuys = (buys) => {
   return new Promise(resolve => {
-    
+    const groupedBuys = {};
+
+    buys.forEach(buy => {
+      const currency = buy.currency;
+      const date = buy.txInfo[0][2];
+
+      if (!(currency in groupedBuys)) {
+        groupedBuys[currency] = [];
+      }
+
+      groupedBuys[currency].push({
+        size: buy.size,
+        cost: buy.cost,
+        date
+      });
+    });
+
+    resolve(groupedBuys);
+  });
+}
+
+const processBuySellGroups = (sells, buys) => {
+  return new Promise(resolve => {
+    sells.forEach(sell => {
+      // console.log(sell);
+    });
+    resolve({});
   });
 }
 
@@ -139,7 +140,8 @@ http.createServer(async (req, res) => {
   //    sort by iso date key
   // 2) group by order id
   // 3) group into buy/sells with determined cost basis
-  // 4) loop over sales against buys, use up buy rows to equate amount of crypto sold
+  // 4) group buys by currency
+  // 5) loop over sales against buys, use up buy rows to equate amount of crypto sold
   //    track remainder for future sales or next year
 
   // 1
@@ -153,7 +155,10 @@ http.createServer(async (req, res) => {
   const txRowsGroupedByEvent = await groupTxsByEvent(txRowsGrouped); // buy/sell
 
   // 4
-  await processBuySellGroups(txRowsGroupedByEvent);
+  const groupedBuys = await groupBuys(txRowsGroupedByEvent.buys);
+
+  // 5
+  await processBuySellGroups(txRowsGroupedByEvent.sells, groupedBuys);
 
   const portfolios = {};
 

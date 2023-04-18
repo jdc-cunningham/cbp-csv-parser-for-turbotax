@@ -1,3 +1,27 @@
+### 04/18/2023
+
+5:38 PM
+
+okay... today is the final day I need to get this done
+
+I'm feeling spent... didn't sleep well, drove two hours for an in-person interview
+
+let's go... I've got buy/sell groups, now I need to loop through the sales against the buys (added up to match quantity sold, with average cost basis)
+
+ugh what's annoying when I'm tired/late in the day, my damn hands/fingers won't stop sweating, getting my keyboard feeling gross
+
+6:09 PM
+
+huh... that was interesting, after I updated the crop data, there are no sales... for 2021 remainder
+
+that would make sense since I am not caring about sales that happened in 2021, I just care about what is left over for 2022 to sell
+
+so I'll need to double check this (against OG 2021) and then store the buys to be used with the other file... I'll probably just do a JSON file.
+
+
+
+---
+
 ### 04/17/2023
 
 2:33 PM
