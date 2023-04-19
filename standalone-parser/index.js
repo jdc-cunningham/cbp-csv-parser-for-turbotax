@@ -72,7 +72,6 @@ const groupTxsByEvent = (txRowsGrouped) => {
         buys.push({
           tradeId,
           txInfo,
-          originalSize: txInfo[1][3],
           size: txInfo[1][3],
           cost: amount,
           currency: txInfo[1][5],
@@ -113,12 +112,13 @@ const groupBuys = (buys, prevYearBuys) => {
 
       groupedBuys[currency].push({
         size: buy.size,
+        originalSize: buy.size,
         cost: buy.cost,
         date
       });
     });
 
-    console.log(groupedBuys['ETH'][0]);
+    // console.log(groupedBuys['ETH'][0]);
 
     resolve(groupedBuys);
   });
@@ -126,39 +126,87 @@ const groupBuys = (buys, prevYearBuys) => {
 
 // returns buy cost of this fractional bit that was sold
 // cross multiplication
-const buySellMatchCost = (buySize, buyCost, sellSize) => {
-  ((sellSize * buyCost) / buySize)
+const buySellMatchCost = (buySize, buyCost, sellSize) => ((sellSize * buyCost) / buySize);
+
+const sellBuyMatchCost = (sellSize, sellCost, buySize) => ((buySize * sellCost) / sellSize);
+
+// recursive function that keeps taking fractions or whole buys until the current sale is met
+const sumUpBuys = (saleMatched, partialSells, currency, sale, buys, resolver) => {
+  const amountSold = parseFloat(sale.size);
+
+  if (saleMatched !== amountSold) {
+    // const buy = buys[currency][0];
+    // const buySize = buy.size;
+    // const sellBuyMatchCost = buySellMatchCost(buy.originalSize, buyCost, -1 * buySize);
+    // const partialSellProceeds = sellBuyMatchCost(buySize, sale.proceeds, -1 * amountSold);
+
+    // partialSells.push({
+    //   size: buySize,
+    //   gainLoss: partialSellProceeds + sellBuyMatchCost
+    // });
+
+    // saleMatched += buySize;
+
+  } else {
+    resolver({});
+  }
 }
 
 // this takes in the "buckets" of crypto purchased at different dates/prices
 // sorted in ascending order (by purchase date eg. first is oldest)
 // modifies this to reduce as the sale is processed against it
 // keeps reducing until sale is met if necessary (need more than one buy to fullfill sale)
-const matchSale = (sale, buys) => {
-  const currency = sale.currency;
-  const amountSold = parseFloat(sale.size);
-  const buy = buys[currency][0];
-  const buySize = parseFloat(buy.size);
-  const buyCost = buy.cost;
+const matchSale = async (sale, buys) => {
+  return new Promise(resolve => {
+    const currency = sale.currency;
+    const amountSold = parseFloat(sale.size);
+    const sellProceeds = parseFloat(sale.proceeds);
+    const buy = buys[currency][0];
+    const buySize = parseFloat(buy.size);
+    const buyCost = buy.cost;
 
-  if (buySize > amountSold) {
-    const sellBuyMatchCost = buySellMatchCost(buySize, buyCost, amountSold);
+    console.log('buy size', buySize, amountSold);
+  
+    if (buySize > (-1 * amountSold)) {
+      // console.log(buySize, buyCost, amountSold);
+      const sellBuyMatchCost = buySellMatchCost(buySize, buyCost, -1 * amountSold);
+  
+      // reduce bucket
+      console.log('pre', buy.size);
+      buy.size = buySize + amountSold;
+      console.log('post', buy.size);
+  
+      // console.log(sellProceeds, sellBuyMatchCost);
+  
+      resolve(sellProceeds + sellBuyMatchCost);
+    } else {
+      console.log('else');
+      // combine multiple buys to match needed sell size
+      // console.log('else');
+  
+      // use remaining buy
+  
+      // reduce sell
+  
+      // do this loop
 
-    // reduce bucket
-    buy.size = buySize - amountSold;
-  } else {
-    // combine multiple buys to match needed sell size
-    
-  } 
+      let saleMatched = 0;
+      const partialSells = [];
+  
+      sumUpBuys(saleMatched, partialSells, currency, sale, buys, resolve);
+    }
+  });
 }
 
 const processBuySellGroups = (sells, buys) => {
-  return new Promise(resolve => {
-    console.log(sells[0]);
+  return new Promise(async resolve => {
+    // console.log(sells[0]);
 
     const gainLoss = [];
 
-    sells.forEach(sell => {
+    // sells.forEach(async sell => {
+    for (let i = 0; i < 2; i++) {
+      const sell = sells[i];
       const date = sell.txInfo[0][2];
       const currency = sell.currency;
 
@@ -166,9 +214,13 @@ const processBuySellGroups = (sells, buys) => {
       gainLoss.push({
         date,
         currency,
-        gain: matchSale(sell, buys) // + if gain, - if loss
+        gain: await matchSale(sell, buys) // + if gain, - if loss
       })
-    });
+    // });
+    }
+
+    // console.log(gainLoss);
+
     resolve({});
   });
 }
@@ -204,6 +256,15 @@ http.createServer(async (req, res) => {
 
   // 4
   const groupedBuys = await groupBuys(txRowsGroupedByEvent.buys, prevYearBuys);
+
+  console.log('sale');
+  console.log(txRowsGroupedByEvent.sells[0].size, txRowsGroupedByEvent.sells[0].proceeds);
+  console.log('buy');
+  console.log(groupedBuys['ETH'][0]);
+  console.log('sale');
+  console.log(txRowsGroupedByEvent.sells[1].size, txRowsGroupedByEvent.sells[1].proceeds);
+  console.log('buy');
+  console.log(groupedBuys['ETH'][1]);
 
   // 5
   await processBuySellGroups(txRowsGroupedByEvent.sells, groupedBuys);

@@ -76,6 +76,83 @@ what does the loop look like?
   - no (easy, just subtract, keep remaining buy)
   - yes (needs looping to build up/match)
 
+7:17 PM
+
+omg I'm getting distracted
+
+7:23 PM
+
+got the basic one where the sale is against 1 buy row
+
+hard part is the recursive/sum up
+
+there's a freaking bag pipe playing somewhere in my neighborhood lol
+
+so I'm thinking... I keep the row that was subtracted against... or no
+
+amazing grace lol
+
+7:30 PM
+
+Jimmy Neutron takes a hit of spraypaint, brain blast! sitting under a bridge homeless
+
+I will take the remaining buy and subtract from the sale... and then keep going...
+
+I think that's the self-calling loop
+
+7:35 PM
+
+oh yeah... I remember now why this is hard... because you'll get scenarios where it's 9999999999 and it won't "empty" the bucket
+
+so it never gets past it
+
+- use remaining buy row
+- keep going until current sell is matched
+
+7:52 PM
+
+losing focus, I have to finish this today... TODAY
+
+or else I'm f'd and kicking the problem down the road
+
+I can do it...
+
+8:08 PM
+
+I can't fail
+
+8:11 PM
+
+ooh... caffeine at this time not good
+
+I just remembere this song...
+
+(some weird creature rustling in the woods)
+
+(muffled) nobody gonna break my stride
+
+(getting louder) NOBODY GONNA SLOWWWW ME DOWN... OH NO!
+
+come up with the algo you pos come on
+
+8:21 PM
+
+man I'm blanking this is bad
+
+8:33 PM
+
+I'm struggling stuck on this
+
+8:39 PM
+
+I am thinking of changing my approach
+
+I will have a floating buy which will match the size of the sale
+
+It will subtract buy row(s) in ascending order from the buy stack
+
+until it has enough to meet the sale
+
 
 
 ---
