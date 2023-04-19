@@ -18,6 +18,64 @@ that would make sense since I am not caring about sales that happened in 2021, I
 
 so I'll need to double check this (against OG 2021) and then store the buys to be used with the other file... I'll probably just do a JSON file.
 
+6:13 PM
+
+let me verify 2021 crop one more time
+
+ETH hit 0 at 169724615 2021-10-22T18:30:33.029Z (correct)
+
+BTC hit 0 at 236043807 2021-11-15T00:33:06.084Z (correct)
+
+okay so I'll output the data as importable JSON.
+
+alright switching to year 2022
+
+I will read the JSON prev buys file and set it as starting group
+
+yeah... I remember this "let me trade a bunch of random currencies" then it all tanked and they all lost like 60% of value hilarious
+
+<img src="./cryptos.JPG"/>
+
+6:27 PM
+
+oh man... this is the hard part... the summing bit
+
+6:31 PM
+
+I've built this before... the issue is the rounding, but now we have currency.js
+
+example 1:
+
+sold 0.0305128000000000 of ETH with proceed of $96.5730120000000000 look at this decimal lmfao why is it so long... damn forgot my sigfigs days
+
+is the first ETH buy row, at least that much?
+
+0.04346766 ETH purchased for $191.257704 at 2021-12-03...
+
+So there will be some left over from this purchase, you subtract it out of the "bucket" so to speak
+
+...but it can be a recursive deal until the amount is met or while loop anyway.
+
+6:42 PM
+
+boy is getting distracted come on, finish it, put an end to this misery (until next year lmao) that's a good problem to have, means I survived my current problem (no job)
+
+6:46 PM reee my hands and keyboard
+
+what do I do here... I need to try some multiplication with currency.js
+
+the issue is you have to split this thing up... fraction
+
+the above, you have `0.04346766 - 0.0305128`
+
+6:49 PM
+
+what does the loop look like?
+
+- is the amount sold > buy row
+  - no (easy, just subtract, keep remaining buy)
+  - yes (needs looping to build up/match)
+
 
 
 ---

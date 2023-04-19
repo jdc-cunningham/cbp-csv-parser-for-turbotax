@@ -72,6 +72,7 @@ const groupTxsByEvent = (txRowsGrouped) => {
         buys.push({
           tradeId,
           txInfo,
+          originalSize: txInfo[1][3],
           size: txInfo[1][3],
           cost: amount,
           currency: txInfo[1][5],
@@ -98,9 +99,9 @@ const groupTxsByEvent = (txRowsGrouped) => {
   });
 }
 
-const groupBuys = (buys) => {
+const groupBuys = (buys, prevYearBuys) => {
   return new Promise(resolve => {
-    const groupedBuys = {};
+    const groupedBuys = {...prevYearBuys};
 
     buys.forEach(buy => {
       const currency = buy.currency;
@@ -117,14 +118,56 @@ const groupBuys = (buys) => {
       });
     });
 
+    console.log(groupedBuys['ETH'][0]);
+
     resolve(groupedBuys);
   });
 }
 
+// returns buy cost of this fractional bit that was sold
+// cross multiplication
+const buySellMatchCost = (buySize, buyCost, sellSize) => {
+  ((sellSize * buyCost) / buySize)
+}
+
+// this takes in the "buckets" of crypto purchased at different dates/prices
+// sorted in ascending order (by purchase date eg. first is oldest)
+// modifies this to reduce as the sale is processed against it
+// keeps reducing until sale is met if necessary (need more than one buy to fullfill sale)
+const matchSale = (sale, buys) => {
+  const currency = sale.currency;
+  const amountSold = parseFloat(sale.size);
+  const buy = buys[currency][0];
+  const buySize = parseFloat(buy.size);
+  const buyCost = buy.cost;
+
+  if (buySize > amountSold) {
+    const sellBuyMatchCost = buySellMatchCost(buySize, buyCost, amountSold);
+
+    // reduce bucket
+    buy.size = buySize - amountSold;
+  } else {
+    // combine multiple buys to match needed sell size
+    
+  } 
+}
+
 const processBuySellGroups = (sells, buys) => {
   return new Promise(resolve => {
+    console.log(sells[0]);
+
+    const gainLoss = [];
+
     sells.forEach(sell => {
+      const date = sell.txInfo[0][2];
+      const currency = sell.currency;
+
       // console.log(sell);
+      gainLoss.push({
+        date,
+        currency,
+        gain: matchSale(sell, buys) // + if gain, - if loss
+      })
     });
     resolve({});
   });
@@ -144,9 +187,14 @@ http.createServer(async (req, res) => {
   // 5) loop over sales against buys, use up buy rows to equate amount of crypto sold
   //    track remainder for future sales or next year
 
+  // 0
+  // read previous year data eg. prev-year-buys.json
+  const prevYearBuysPath = '../prev-year-buys.json';
+  const prevYearBuys = fs.existsSync(prevYearBuysPath) ? JSON.parse(fs.readFileSync(prevYearBuysPath, 'utf8')) : {};
+
   // 1
-  const txRows = await parseCsv("../csv-files/CBP-2021-crop.csv");
-  // const txRows = await parseCsv("../csv-files/2022-account-statement.csv");
+  // const txRows = await parseCsv("../csv-files/CBP-2021-crop.csv");
+  const txRows = await parseCsv("../csv-files/2022-account-statement.csv");
 
   // 2
   const txRowsGrouped = await groupTxsByTradeId(txRows);
@@ -155,12 +203,14 @@ http.createServer(async (req, res) => {
   const txRowsGroupedByEvent = await groupTxsByEvent(txRowsGrouped); // buy/sell
 
   // 4
-  const groupedBuys = await groupBuys(txRowsGroupedByEvent.buys);
+  const groupedBuys = await groupBuys(txRowsGroupedByEvent.buys, prevYearBuys);
 
   // 5
   await processBuySellGroups(txRowsGroupedByEvent.sells, groupedBuys);
 
-  const portfolios = {};
+  // const jsonRes = groupedBuys;
+
+  const jsonRes = {};
 
   // CORS
   // https://stackoverflow.com/a/54309023/2710227
@@ -173,5 +223,5 @@ http.createServer(async (req, res) => {
     'Expires': new Date().toUTCString()
   });
 
-  res.end(JSON.stringify(portfolios));
+  res.end(JSON.stringify(jsonRes));
 }).listen(8080);
