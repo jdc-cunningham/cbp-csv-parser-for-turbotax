@@ -126,65 +126,86 @@ const groupBuys = (buys, prevYearBuys) => {
 
 // returns buy cost of this fractional bit that was sold
 // cross multiplication
-const buySellMatchCost = (buySize, buyCost, sellSize) => ((sellSize * buyCost) / buySize);
+const partialBuyCost = (buySize, buyCost, sellSize) => ((sellSize * buyCost) / buySize);
 
-const sellBuyMatchCost = (sellSize, sellCost, buySize) => ((buySize * sellCost) / sellSize);
+// const sellBuyMatchCost = (sellSize, sellCost, buySize) => ((buySize * sellCost) / sellSize);
 
-// recursive function that keeps taking fractions or whole buys until the current sale is met
-const sumUpBuys = (saleMatched, partialSells, currency, sale, buys, resolver) => {
-  const amountSold = parseFloat(sale.size);
+// recursive function that keeps adding up fractional buys if necessary
+// to match sale
+// matchedSale is a decimal that counts up to match sellSize
+const matchSale = (sell, buys, matchedSale, matches = []) => {
+  const sellSize = parseFloat(sell.size); // should have parse floated it earlier
+  const sellProceeds = parseFloat(sell.proceeds);
+  const buyRow = buys[0];
+  const buyPartialSize = parseFloat(buyRow.size);
+  const buyFullSize = parseFloat(buyRow.originalSize);
+  const buyCost = -1 * parseFloat(buyRow.cost);
 
-  if (saleMatched !== amountSold) {
-    // const buy = buys[currency][0];
-    // const buySize = buy.size;
-    // const sellBuyMatchCost = buySellMatchCost(buy.originalSize, buyCost, -1 * buySize);
-    // const partialSellProceeds = sellBuyMatchCost(buySize, sale.proceeds, -1 * amountSold);
+  if (!matchedSale) {
+    let matchedSize = 0;
 
-    // partialSells.push({
-    //   size: buySize,
-    //   gainLoss: partialSellProceeds + sellBuyMatchCost
-    // });
+    matches.forEach(match => {
+      matchedSize += match.size;
+    });
 
-    // saleMatched += buySize;
+    if (matchedSize === sellSize) {
+      matchedSale = true;
+    } else {
+      if (buyPartialSize < sellSize) {
+        matches.push({
+          size: buyPartialSize,
+          cost: partialBuyCost(buyFullSize, buyCost, buyPartialSize)
+        });
 
-  } else {
-    resolver({});
+        buys.shift();
+      } else {
+        matches.push({
+          size: buyPartialSize,
+          cost: partialBuyCost(buyFullSize, buyCost, sellSize)
+        });
+
+        buyRow.size = buyPartialSize - sellSize;
+      }
+    }
+  }
+  
+  if (matchedSale) {
+    let matchedCost = 0;
+
+    matches.forEach(match => {
+      matchedCost += match.cost;
+    });
+
+    return(sellProceeds - matchedCost);
   }
 }
 
-// this takes in the "buckets" of crypto purchased at different dates/prices
-// sorted in ascending order (by purchase date eg. first is oldest)
-// modifies this to reduce as the sale is processed against it
-// keeps reducing until sale is met if necessary (need more than one buy to fullfill sale)
-const matchSale = async (sale, buys) => {
-  // let buy;
-  // let buyRow = 0;
-  // let gainLoss = 0;
+const calcGainLoss = (sell, buys) => {
+  return new Promise(resolve => {
+    const currency = sell.currency;
+    const sellSize = parseFloat(sell.size); // should have parse floated it earlier
+    const sellProceeds = parseFloat(sell.proceeds);
+    const buyRow = buys[currency][0];
+    const buySize = parseFloat(buyRow.size);
+    const buyCost = -1 * parseFloat(buyRow.cost);
 
-  // return new Promise(resolve => {
-  //   const currency = sale.currency;
-  //   const amountSold = -1 * parseFloat(sale.size);
-  //   const sellProceeds = parseFloat(sale.proceeds);
+    let matchedSale = 0;
+    
+    if (buySize > sellSize) {
+      matchedSale = sellSize;
+      buyRow.size = buySize - sellSize;
 
-  //   let buyMatchSellSize = 0;
+      const pBuyCost = partialBuyCost(buyRow.originalSize, buyCost, sellSize);
 
-  //   while (buyMatchSellSize < amountSold) {
-  //     buy = buys[currency][buyRow];
-  //     const buySize = parseFloat(buy.originalSize);
-  //     const buyCost = buy.cost;
-  //     const sellBuyMatchCost = buySellMatchCost(buySize, buyCost, amountSold); // cost of matching sale size from buy
+      resolve(sellProceeds - pBuyCost);
+    } else {
+      let saleMatched = false;
+      const matches = [];
+      const gainLoss = matchSale(sell, buys, saleMatched, matches, resolve);
 
-  //     if (buySize > amountSold) {
-  //       buyMatchSellSize = amountSold;
-
-  //       gainLoss = sellProceeds - sellBuyMatchCost;
-  //     } else {
-      
-  //     }
-  //   }
-
-  //   resolve(gainLoss);
-  // });
+      resolve(gainLoss);
+    }
+  });
 }
 
 const processBuySellGroups = (sells, buys) => {
@@ -200,15 +221,17 @@ const processBuySellGroups = (sells, buys) => {
       const currency = sell.currency;
 
       // console.log(sell);
+
+      // console.log(sell);
       gainLoss.push({
         date,
         currency,
-        gain: await matchSale(sell, buys) // + if gain, - if loss
+        gain: await calcGainLoss(sell, buys) // + if gain, - if loss
       })
     // });
     }
 
-    // console.log(gainLoss);
+    console.log(gainLoss);
 
     resolve({});
   });

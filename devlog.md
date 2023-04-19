@@ -1,3 +1,54 @@
+### 04/19/2023
+
+4:03 PM
+
+man... my sleep pattern is still f'd
+
+I can't reset it, keep trying
+
+I'm also like super f'd finance wise might be homeless lmao
+
+4:10 PM
+
+I need to really dumb this down for myself
+
+I got semi-good sleep today so I can think
+
+- loop over sells
+- matching holder
+  - this gets filled up by part of/several buys to match sale amount
+  - remove used buy rows
+- next iteration
+
+seems simple
+
+4:15 PM
+
+alright let's go
+
+start from blank slate again
+
+4:23 PM
+
+distracted...
+
+4:27 PM
+
+I usually listen to music to get in the zone but times like these when I really need to focus, have to be in silence
+
+4:35 PM
+
+omg Jacob focus
+
+I keep looking at news articles
+
+4:51 PM
+
+going in circles struggling damn, weak brain
+
+
+
+
 ### 04/18/2023
 
 5:38 PM
