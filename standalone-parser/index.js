@@ -118,8 +118,6 @@ const groupBuys = (buys, prevYearBuys) => {
       });
     });
 
-    // console.log(groupedBuys['ETH'][0]);
-
     resolve(groupedBuys);
   });
 }
@@ -131,8 +129,72 @@ const partialBuyCost = (buySize, buyCost, sellSize) => ((sellSize * buyCost) / b
 // const sellBuyMatchCost = (sellSize, sellCost, buySize) => ((buySize * sellCost) / sellSize);
 
 // recursive function that keeps adding up fractional buys to match sale
-const matchSale = (sell, buys, matchedSale) => {
-  
+const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
+  loopCounter += 1;
+
+  const currency = sell.currency;
+  const sellSize = -1 * parseFloat(sell.size);
+  const sellProceeds = parseFloat(sell.proceeds);
+  const buy = buys[currency][0];
+
+  if (!buy) {
+    throw Error('ran out of buy rows');
+  }
+
+  // console.log('b', buys[currency].length, buy);
+  const buyPartialSize = parseFloat(buy.size); // reduced as used up or whole row removed
+  const buySize = parseFloat(buy.originalSize);
+  const buyCost = -1 * parseFloat(buy.cost);
+
+  if (matchedSale) {
+    let matchedCost = 0;
+
+    matches.forEach(match => {
+      matchedCost += match.cost;
+    });
+
+    // console.log('mc', matchedCost, sellProceeds);
+
+    // console.log('matched', sellProceeds - matchedCost);
+
+    return sellProceeds - matchedCost;
+  }
+
+  // console.log('matches', matches);
+
+  let matchedSize = 0;
+
+  matches.forEach(match => {
+    matchedSize += match.size;
+  });
+
+  if ((matchedSize + buyPartialSize) < sellSize) {
+    matches.push({
+      size: buyPartialSize,
+      cost: partialBuyCost(buySize, buyCost, buyPartialSize)
+    });
+
+    buys[currency].shift();
+  } else {
+    const remainder = sellSize - matchedSize;
+
+    matches.push({
+      size: remainder,
+      cost: partialBuyCost(buySize, buyCost, remainder)
+    });
+
+    buy.size = buy.size - remainder;
+
+    matchedSale = true;
+  }
+
+  if (loopCounter > 100) {
+    console.log(sell);
+    console.log(buy);
+    throw Error('too many loops');
+  }
+
+  return matchSale(sell, buys, matchedSale, matches, loopCounter);
 }
 
 const calcGainLoss = (sell, buys) => {
@@ -153,9 +215,14 @@ const calcGainLoss = (sell, buys) => {
       gainLoss = sellProceeds - matchedSellBuyCost;
     } else {
       let matchedSale = false;
+      let loopCounter = 0; // safety/error
 
-      gainLoss = matchSale(sell, buys, matchedSale);
+      const matches = [];
+
+      gainLoss = matchSale(sell, buys, matchedSale, matches, loopCounter);
     }
+
+    console.log('gain loss', gainLoss);
 
     resolve(gainLoss);
   });
@@ -163,28 +230,31 @@ const calcGainLoss = (sell, buys) => {
 
 const processBuySellGroups = (sells, buys) => {
   return new Promise(async resolve => {
-    // console.log(sells[0]);
-
-    const gainLoss = [];
+    const gainLoss = {};
 
     // sells.forEach(async sell => {
-    for (let i = 0; i < 2; i++) {
-      const sell = sells[i];
+    for (sell of sells) {
+    // for (let i = 0; i < 2; i++) {
+      // const sell = sells[i];
       const date = sell.txInfo[0][2];
       const currency = sell.currency;
 
-      // console.log(sell);
+      console.log('currency', currency);
 
-      // console.log(sell);
-      gainLoss.push({
+      if (!(currency in gainLoss)) {
+        gainLoss[currency] = [];
+      }
+
+      gainLoss[currency].push({
         date,
         currency,
         gain: await calcGainLoss(sell, buys) // + if gain, - if loss
       })
+    // }
     // });
-    }
+    };
 
-    console.log(gainLoss);
+    console.log('gl', gainLoss);
 
     resolve({});
   });

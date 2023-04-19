@@ -60,6 +60,26 @@ in Dec 03 2021, ETH was around $4373.72 and in Jan 18 2022 it was worth around 3
 
 so yeah lost about 28% of its value
 
+5:56 PM
+
+alright... this is looking good
+
+<img src="./matching-values.JPG"/>
+
+6:07 PM
+
+holy crap I think it's right... haha nice
+
+<img src="./diary-of-a-noob-getting-rekt.png"/>
+
+damn this was rough... I bought this with credit card money too = more losses oof
+
+that's why I'm poor
+
+6:13 PM
+
+so... I have to average I guess the date purchased... then produce the spreadsheet that can be imported into turbotax
+
 
 
 ---
