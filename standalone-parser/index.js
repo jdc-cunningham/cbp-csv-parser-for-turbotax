@@ -130,81 +130,34 @@ const partialBuyCost = (buySize, buyCost, sellSize) => ((sellSize * buyCost) / b
 
 // const sellBuyMatchCost = (sellSize, sellCost, buySize) => ((buySize * sellCost) / sellSize);
 
-// recursive function that keeps adding up fractional buys if necessary
-// to match sale
-// matchedSale is a decimal that counts up to match sellSize
-const matchSale = (sell, buys, matchedSale, matches = []) => {
-  const sellSize = parseFloat(sell.size); // should have parse floated it earlier
-  const sellProceeds = parseFloat(sell.proceeds);
-  const buyRow = buys[0];
-  const buyPartialSize = parseFloat(buyRow.size);
-  const buyFullSize = parseFloat(buyRow.originalSize);
-  const buyCost = -1 * parseFloat(buyRow.cost);
-
-  if (!matchedSale) {
-    let matchedSize = 0;
-
-    matches.forEach(match => {
-      matchedSize += match.size;
-    });
-
-    if (matchedSize === sellSize) {
-      matchedSale = true;
-    } else {
-      if (buyPartialSize < sellSize) {
-        matches.push({
-          size: buyPartialSize,
-          cost: partialBuyCost(buyFullSize, buyCost, buyPartialSize)
-        });
-
-        buys.shift();
-      } else {
-        matches.push({
-          size: buyPartialSize,
-          cost: partialBuyCost(buyFullSize, buyCost, sellSize)
-        });
-
-        buyRow.size = buyPartialSize - sellSize;
-      }
-    }
-  }
+// recursive function that keeps adding up fractional buys to match sale
+const matchSale = (sell, buys, matchedSale) => {
   
-  if (matchedSale) {
-    let matchedCost = 0;
-
-    matches.forEach(match => {
-      matchedCost += match.cost;
-    });
-
-    return(sellProceeds - matchedCost);
-  }
 }
 
 const calcGainLoss = (sell, buys) => {
   return new Promise(resolve => {
+    let gainLoss = 0;
+
     const currency = sell.currency;
-    const sellSize = parseFloat(sell.size); // should have parse floated it earlier
+    const sellSize = -1 * parseFloat(sell.size);
     const sellProceeds = parseFloat(sell.proceeds);
-    const buyRow = buys[currency][0];
-    const buySize = parseFloat(buyRow.size);
-    const buyCost = -1 * parseFloat(buyRow.cost);
+    const buy = buys[currency][0];
+    const buyPartialSize = parseFloat(buy.size); // reduced as used up or whole row removed
+    const buySize = parseFloat(buy.originalSize);
+    const buyCost = -1 * parseFloat(buy.cost);
 
-    let matchedSale = 0;
-    
-    if (buySize > sellSize) {
-      matchedSale = sellSize;
-      buyRow.size = buySize - sellSize;
-
-      const pBuyCost = partialBuyCost(buyRow.originalSize, buyCost, sellSize);
-
-      resolve(sellProceeds - pBuyCost);
+    if (buyPartialSize > sellSize) {
+      const matchedSellBuyCost = partialBuyCost(buySize, buyCost, sellSize);
+      buy.size = buy.size - sellSize;
+      gainLoss = sellProceeds - matchedSellBuyCost;
     } else {
-      let saleMatched = false;
-      const matches = [];
-      const gainLoss = matchSale(sell, buys, saleMatched, matches, resolve);
+      let matchedSale = false;
 
-      resolve(gainLoss);
+      gainLoss = matchSale(sell, buys, matchedSale);
     }
+
+    resolve(gainLoss);
   });
 }
 
@@ -269,14 +222,14 @@ http.createServer(async (req, res) => {
   // 4
   const groupedBuys = await groupBuys(txRowsGroupedByEvent.buys, prevYearBuys);
 
-  console.log('sale');
-  console.log(txRowsGroupedByEvent.sells[0].size, txRowsGroupedByEvent.sells[0].proceeds);
-  console.log('buy');
-  console.log(groupedBuys['ETH'][0]);
-  console.log('sale');
-  console.log(txRowsGroupedByEvent.sells[1].size, txRowsGroupedByEvent.sells[1].proceeds);
-  console.log('buy');
-  console.log(groupedBuys['ETH'][1]);
+  // console.log('sale');
+  // console.log(txRowsGroupedByEvent.sells[0], txRowsGroupedByEvent.sells[0].size, txRowsGroupedByEvent.sells[0].proceeds);
+  // console.log('buy');
+  // console.log(groupedBuys['ETH'][0]);
+  // console.log('sale');
+  // console.log(txRowsGroupedByEvent.sells[1].size, txRowsGroupedByEvent.sells[1].proceeds);
+  // console.log('buy');
+  // console.log(groupedBuys['ETH'][1]);
 
   // 5
   await processBuySellGroups(txRowsGroupedByEvent.sells, groupedBuys);

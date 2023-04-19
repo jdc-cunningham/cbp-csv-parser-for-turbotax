@@ -46,8 +46,23 @@ I keep looking at news articles
 
 going in circles struggling damn, weak brain
 
+5:10 PM
+
+here is an example of filling in remainder/cost basis, determining gain/loss
+
+<img src="./ex-sum-up.JPG"/>
+
+This is how I know that it's working before I accept the output of the full loop.
+
+So far I don't have it working.
+
+in Dec 03 2021, ETH was around $4373.72 and in Jan 18 2022 it was worth around 3,166.07
+
+so yeah lost about 28% of its value
 
 
+
+---
 
 ### 04/18/2023
 
