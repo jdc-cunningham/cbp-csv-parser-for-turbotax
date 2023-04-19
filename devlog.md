@@ -80,6 +80,24 @@ that's why I'm poor
 
 so... I have to average I guess the date purchased... then produce the spreadsheet that can be imported into turbotax
 
+I could last date of batches
+
+6:26 PM
+
+I think I may have to separately log each sale date...
+
+Which I think I already have...
+
+6:38 PM
+
+ugh... this sucks... I batched the different buys together to meet the sale
+
+So what date would I use? First buy date or last buy date...
+
+it's an average
+
+I think I would have to split them up which I can do... just sucks to add another processing step to break out the sell gains even further
+
 
 
 ---

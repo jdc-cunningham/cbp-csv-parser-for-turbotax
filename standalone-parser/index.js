@@ -126,7 +126,7 @@ const groupBuys = (buys, prevYearBuys) => {
 // cross multiplication
 const partialBuyCost = (buySize, buyCost, sellSize) => ((sellSize * buyCost) / buySize);
 
-// const sellBuyMatchCost = (sellSize, sellCost, buySize) => ((buySize * sellCost) / sellSize);
+const partialSaleCost = (sellSize, sellCost, buySize) => ((buySize * sellCost) / sellSize);
 
 // recursive function that keeps adding up fractional buys to match sale
 const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
@@ -141,7 +141,6 @@ const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
     throw Error('ran out of buy rows');
   }
 
-  // console.log('b', buys[currency].length, buy);
   const buyPartialSize = parseFloat(buy.size); // reduced as used up or whole row removed
   const buySize = parseFloat(buy.originalSize);
   const buyCost = -1 * parseFloat(buy.cost);
@@ -153,14 +152,15 @@ const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
       matchedCost += match.cost;
     });
 
-    // console.log('mc', matchedCost, sellProceeds);
+    if (sellProceeds - matchedCost === undefined) {
+      console.log('happpened');
+    }
 
-    // console.log('matched', sellProceeds - matchedCost);
-
-    return sellProceeds - matchedCost;
+    return {
+      gainLoss: sellProceeds - matchedCost,
+      matches,
+    };
   }
-
-  // console.log('matches', matches);
 
   let matchedSize = 0;
 
@@ -171,7 +171,9 @@ const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
   if ((matchedSize + buyPartialSize) < sellSize) {
     matches.push({
       size: buyPartialSize,
-      cost: partialBuyCost(buySize, buyCost, buyPartialSize)
+      cost: partialBuyCost(buySize, buyCost, buyPartialSize),
+      date: buy.date,
+      sellProceeds: partialSaleCost(buyPartialSize, sellProceeds, buySize)
     });
 
     buys[currency].shift();
@@ -180,7 +182,9 @@ const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
 
     matches.push({
       size: remainder,
-      cost: partialBuyCost(buySize, buyCost, remainder)
+      cost: partialBuyCost(buySize, buyCost, remainder),
+      date: buy.date,
+      sellProceeds: partialSaleCost(buyPartialSize, sellProceeds, buySize)
     });
 
     buy.size = buy.size - remainder;
@@ -212,7 +216,15 @@ const calcGainLoss = (sell, buys) => {
     if (buyPartialSize > sellSize) {
       const matchedSellBuyCost = partialBuyCost(buySize, buyCost, sellSize);
       buy.size = buy.size - sellSize;
-      gainLoss = sellProceeds - matchedSellBuyCost;
+      gainLoss = {
+        matches: [{
+          size: sellSize,
+          cost: matchedSellBuyCost,
+          date: buy.date,
+          sellProceeds,
+        }],
+        gainLoss: sellProceeds - matchedSellBuyCost,
+      };
     } else {
       let matchedSale = false;
       let loopCounter = 0; // safety/error
@@ -222,8 +234,6 @@ const calcGainLoss = (sell, buys) => {
       gainLoss = matchSale(sell, buys, matchedSale, matches, loopCounter);
     }
 
-    console.log('gain loss', gainLoss);
-
     resolve(gainLoss);
   });
 }
@@ -232,29 +242,27 @@ const processBuySellGroups = (sells, buys) => {
   return new Promise(async resolve => {
     const gainLoss = {};
 
-    // sells.forEach(async sell => {
     for (sell of sells) {
-    // for (let i = 0; i < 2; i++) {
-      // const sell = sells[i];
       const date = sell.txInfo[0][2];
       const currency = sell.currency;
-
-      console.log('currency', currency);
 
       if (!(currency in gainLoss)) {
         gainLoss[currency] = [];
       }
 
+      const calculatedGainLoss = await calcGainLoss(sell, buys); // + if gain, - if loss
+
       gainLoss[currency].push({
         date,
         currency,
-        gain: await calcGainLoss(sell, buys) // + if gain, - if loss
-      })
-    // }
-    // });
+        gain: calculatedGainLoss.gainLoss,
+        matches: calculatedGainLoss.matches,
+      });
     };
 
     console.log('gl', gainLoss);
+
+    console.log(gainLoss['BTC'][0].matches[1]);
 
     resolve({});
   });
@@ -291,15 +299,6 @@ http.createServer(async (req, res) => {
 
   // 4
   const groupedBuys = await groupBuys(txRowsGroupedByEvent.buys, prevYearBuys);
-
-  // console.log('sale');
-  // console.log(txRowsGroupedByEvent.sells[0], txRowsGroupedByEvent.sells[0].size, txRowsGroupedByEvent.sells[0].proceeds);
-  // console.log('buy');
-  // console.log(groupedBuys['ETH'][0]);
-  // console.log('sale');
-  // console.log(txRowsGroupedByEvent.sells[1].size, txRowsGroupedByEvent.sells[1].proceeds);
-  // console.log('buy');
-  // console.log(groupedBuys['ETH'][1]);
 
   // 5
   await processBuySellGroups(txRowsGroupedByEvent.sells, groupedBuys);
