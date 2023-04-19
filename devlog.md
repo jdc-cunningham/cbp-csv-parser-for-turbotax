@@ -153,7 +153,17 @@ It will subtract buy row(s) in ascending order from the buy stack
 
 until it has enough to meet the sale
 
+8:47 PM
 
+oh man this is bad, I'm so spent I can't think
+
+I still have time (12 AM deadline) but yeah...
+
+8:54 PM
+
+this ain't happening... I'll be late by a day
+
+I will sleep and do this with a fresh mind
 
 ---
 

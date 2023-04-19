@@ -157,45 +157,34 @@ const sumUpBuys = (saleMatched, partialSells, currency, sale, buys, resolver) =>
 // modifies this to reduce as the sale is processed against it
 // keeps reducing until sale is met if necessary (need more than one buy to fullfill sale)
 const matchSale = async (sale, buys) => {
-  return new Promise(resolve => {
-    const currency = sale.currency;
-    const amountSold = parseFloat(sale.size);
-    const sellProceeds = parseFloat(sale.proceeds);
-    const buy = buys[currency][0];
-    const buySize = parseFloat(buy.size);
-    const buyCost = buy.cost;
+  // let buy;
+  // let buyRow = 0;
+  // let gainLoss = 0;
 
-    console.log('buy size', buySize, amountSold);
-  
-    if (buySize > (-1 * amountSold)) {
-      // console.log(buySize, buyCost, amountSold);
-      const sellBuyMatchCost = buySellMatchCost(buySize, buyCost, -1 * amountSold);
-  
-      // reduce bucket
-      console.log('pre', buy.size);
-      buy.size = buySize + amountSold;
-      console.log('post', buy.size);
-  
-      // console.log(sellProceeds, sellBuyMatchCost);
-  
-      resolve(sellProceeds + sellBuyMatchCost);
-    } else {
-      console.log('else');
-      // combine multiple buys to match needed sell size
-      // console.log('else');
-  
-      // use remaining buy
-  
-      // reduce sell
-  
-      // do this loop
+  // return new Promise(resolve => {
+  //   const currency = sale.currency;
+  //   const amountSold = -1 * parseFloat(sale.size);
+  //   const sellProceeds = parseFloat(sale.proceeds);
 
-      let saleMatched = 0;
-      const partialSells = [];
-  
-      sumUpBuys(saleMatched, partialSells, currency, sale, buys, resolve);
-    }
-  });
+  //   let buyMatchSellSize = 0;
+
+  //   while (buyMatchSellSize < amountSold) {
+  //     buy = buys[currency][buyRow];
+  //     const buySize = parseFloat(buy.originalSize);
+  //     const buyCost = buy.cost;
+  //     const sellBuyMatchCost = buySellMatchCost(buySize, buyCost, amountSold); // cost of matching sale size from buy
+
+  //     if (buySize > amountSold) {
+  //       buyMatchSellSize = amountSold;
+
+  //       gainLoss = sellProceeds - sellBuyMatchCost;
+  //     } else {
+      
+  //     }
+  //   }
+
+  //   resolve(gainLoss);
+  // });
 }
 
 const processBuySellGroups = (sells, buys) => {
