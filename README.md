@@ -1,6 +1,6 @@
 # Status: Functional
 
-(no withdrawal/transfers)
+(node only, no UI, does not factor in withdrawal/transfers)
 
 ### About
 
