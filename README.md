@@ -1,4 +1,6 @@
-# Status: Incomplete
+# Status: Functional
+
+(no withdrawal/transfers)
 
 ### About
 
