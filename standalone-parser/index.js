@@ -141,7 +141,6 @@ const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
     throw Error('ran out of buy rows');
   }
 
-  // console.log('b', buys[currency].length, buy);
   const buyPartialSize = parseFloat(buy.size); // reduced as used up or whole row removed
   const buySize = parseFloat(buy.originalSize);
   const buyCost = -1 * parseFloat(buy.cost);
@@ -192,7 +191,7 @@ const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
   if (loopCounter > 100) {
     console.log(sell);
     console.log(buy);
-    throw Error('too many loops');
+    throw Error('too many loops'); // in case recursive loop doesn't end
   }
 
   return matchSale(sell, buys, matchedSale, matches, loopCounter);
@@ -296,19 +295,8 @@ http.createServer(async (req, res) => {
   // 4
   const groupedBuys = await groupBuys(txRowsGroupedByEvent.buys, prevYearBuys);
 
-  // console.log('sale');
-  // console.log(txRowsGroupedByEvent.sells[0], txRowsGroupedByEvent.sells[0].size, txRowsGroupedByEvent.sells[0].proceeds);
-  // console.log('buy');
-  // console.log(groupedBuys['ETH'][0]);
-  // console.log('sale');
-  // console.log(txRowsGroupedByEvent.sells[1].size, txRowsGroupedByEvent.sells[1].proceeds);
-  // console.log('buy');
-  // console.log(groupedBuys['ETH'][1]);
-
   // 5
   const gainLoss = await processBuySellGroups(txRowsGroupedByEvent.sells, groupedBuys);
-
-  // console.log(gainLoss);
   
   // 6
   const csvRows = [
