@@ -50,7 +50,7 @@ going in circles struggling damn, weak brain
 
 here is an example of filling in remainder/cost basis, determining gain/loss
 
-<img src="./ex-sum-up.JPG"/>
+<img src="./devlog-images/ex-sum-up.JPG"/>
 
 This is how I know that it's working before I accept the output of the full loop.
 
@@ -64,13 +64,13 @@ so yeah lost about 28% of its value
 
 alright... this is looking good
 
-<img src="./matching-values.JPG"/>
+<img src="./devlog-images/matching-values.JPG"/>
 
 6:07 PM
 
 holy crap I think it's right... haha nice
 
-<img src="./diary-of-a-noob-getting-rekt.png"/>
+<img src="./devlog-images/diary-of-a-noob-getting-rekt.png"/>
 
 damn this was rough... I bought this with credit card money too = more losses oof
 
@@ -127,7 +127,7 @@ okay I got it done... individual buy/sales
 
 I tracked this stuff before during the time
 
-<img src="./loss.JPG"/>
+<img src="./devlog-images/loss.JPG"/>
 
 You can see why I lost so much ha "$100K" that was going around
 
@@ -171,7 +171,7 @@ I will read the JSON prev buys file and set it as starting group
 
 yeah... I remember this "let me trade a bunch of random currencies" then it all tanked and they all lost like 60% of value hilarious
 
-<img src="./cryptos.JPG"/>
+<img src="./devlog-images/cryptos.JPG"/>
 
 6:27 PM
 
@@ -374,7 +374,7 @@ Oh man... this was a good catch
 
 these partial events under same `orderId` ugh... need to check that
 
-<img src="./partial.JPG"/>
+<img src="./devlog-images/partial.JPG"/>
 
 I don't know... I was trying to make sure the rows were in order since there was a case where the time was out of order... but maybe the match, match, fee rows were not out of order
 
@@ -527,7 +527,7 @@ I will not factor in portfolio other than matching values (due to non-guaranteed
 
 holy crap look at this one, 18 groups
 
-<img src="./18-same.JPG"/>
+<img src="./devlog-images/18-same.JPG"/>
 
 6:48 PM
 
@@ -698,7 +698,7 @@ I have till Monday I'd say, Tuesday
 
 rough ideas/designs
 
-<img src="./sketches.JPG"/>
+<img src="./devlog-images/sketches.JPG"/>
 
 I don't want to build this app, but I think I need to in order to do this parsing/tracing of past transactions
 
@@ -722,13 +722,13 @@ Although there is the matter of selling what's in the portfolio vs. selling it s
 
 It's funny I pretty much just made a spreadsheet in the web so far
 
-<img src="./ui-base.JPG"/>
+<img src="./devlog-images/ui-base.JPG"/>
 
 9:42 PM
 
 Here you can see how zero-balance highlighting is helpful to figure out where to start the FIFO
 
-<img src="./zero-balance-highlight.gif"/>
+<img src="./devlog-images/zero-balance-highlight.gif"/>
 
 I need to add a checkbox for every row, they're all selected by defualt, then uncheck/pick the ones to keep... a good way would be to make assumptions, like click at 500 row and keep the rest after that, or stop at this row 700, out of 1100 or something
 
@@ -740,7 +740,7 @@ That would have to be preparsed so it shows up here in render as a column cost
 
 this one is good, all were sold in this year, none carried over into next year
 
-<img src="./all-sold.JPG"/>
+<img src="./devlog-images/all-sold.JPG"/>
 
 Damn great song All Nightmare Long, like these f'n crypto transactions and floating point precision
 
