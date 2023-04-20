@@ -80,6 +80,57 @@ that's why I'm poor
 
 so... I have to average I guess the date purchased... then produce the spreadsheet that can be imported into turbotax
 
+6:48 PM
+
+I started to break apart the sales to log each buy... but got lost need to try again
+
+this is hard, I have to load up this app's state/flow into my mind and keep it to work on it
+
+I pushed up the the `tmp` branch of my attempt but screwed up
+
+went back to here working code
+
+7:03 PM
+
+it checks out still with the broken out sales
+
+ex.
+
+```
+sale date 2022-01-18T23:52:32.799Z
+{
+  size: 0.0305128,
+  cost: 134.25632,
+  buyDate: '2021-12-03T16:06:37.813Z',
+  saleAmount: 96.573012
+}
+sale date 2022-01-18T23:52:33.155Z
+{
+  size: 0.012954859999999999,
+  cost: 57.00138399999999,
+  buyDate: '2021-12-03T16:06:37.813Z',
+  saleAmount: 41.002131899999995
+}
+{
+  size: 0.018503110000000003,
+  cost: 75.86275100000002,
+  buyDate: '2021-12-04T20:03:48.143Z',
+  saleAmount: 58.562343150000004
+}
+```
+
+now I'll produce the spreadsheet
+
+7:14 PM
+
+okay I got it done... individual buy/sales
+
+I tracked this stuff before during the time
+
+<img src="./loss.JPG"/>
+
+You can see why I lost so much ha "$100K" that was going around
+
 
 
 ---

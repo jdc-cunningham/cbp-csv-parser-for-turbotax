@@ -126,7 +126,7 @@ const groupBuys = (buys, prevYearBuys) => {
 // cross multiplication
 const partialBuyCost = (buySize, buyCost, sellSize) => ((sellSize * buyCost) / buySize);
 
-// const sellBuyMatchCost = (sellSize, sellCost, buySize) => ((buySize * sellCost) / sellSize);
+const partialSaleCost = (sellSize, sellCost, buySize) => ((buySize * sellCost) / sellSize);
 
 // recursive function that keeps adding up fractional buys to match sale
 const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
@@ -153,14 +153,11 @@ const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
       matchedCost += match.cost;
     });
 
-    // console.log('mc', matchedCost, sellProceeds);
-
-    // console.log('matched', sellProceeds - matchedCost);
-
-    return sellProceeds - matchedCost;
+    return {
+      gainLoss: sellProceeds - matchedCost,
+      matches 
+    };
   }
-
-  // console.log('matches', matches);
 
   let matchedSize = 0;
 
@@ -171,7 +168,9 @@ const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
   if ((matchedSize + buyPartialSize) < sellSize) {
     matches.push({
       size: buyPartialSize,
-      cost: partialBuyCost(buySize, buyCost, buyPartialSize)
+      cost: partialBuyCost(buySize, buyCost, buyPartialSize),
+      buyDate: buy.date,
+      saleAmount: partialSaleCost(sellSize, sellProceeds, buyPartialSize)
     });
 
     buys[currency].shift();
@@ -180,7 +179,9 @@ const matchSale = (sell, buys, matchedSale, matches, loopCounter) => {
 
     matches.push({
       size: remainder,
-      cost: partialBuyCost(buySize, buyCost, remainder)
+      cost: partialBuyCost(buySize, buyCost, remainder),
+      buyDate: buy.date,
+      saleAmount: partialSaleCost(sellSize, sellProceeds, remainder)
     });
 
     buy.size = buy.size - remainder;
@@ -212,7 +213,15 @@ const calcGainLoss = (sell, buys) => {
     if (buyPartialSize > sellSize) {
       const matchedSellBuyCost = partialBuyCost(buySize, buyCost, sellSize);
       buy.size = buy.size - sellSize;
-      gainLoss = sellProceeds - matchedSellBuyCost;
+      gainLoss = {
+        gainLoss: sellProceeds - matchedSellBuyCost,
+        matches: [{
+          size: sellSize,
+          cost: matchedSellBuyCost,
+          buyDate: buy.date,
+          saleAmount: sellProceeds
+        }]
+      };
     } else {
       let matchedSale = false;
       let loopCounter = 0; // safety/error
@@ -222,8 +231,6 @@ const calcGainLoss = (sell, buys) => {
       gainLoss = matchSale(sell, buys, matchedSale, matches, loopCounter);
     }
 
-    console.log('gain loss', gainLoss);
-
     resolve(gainLoss);
   });
 }
@@ -232,31 +239,25 @@ const processBuySellGroups = (sells, buys) => {
   return new Promise(async resolve => {
     const gainLoss = {};
 
-    // sells.forEach(async sell => {
     for (sell of sells) {
-    // for (let i = 0; i < 2; i++) {
-      // const sell = sells[i];
       const date = sell.txInfo[0][2];
       const currency = sell.currency;
-
-      console.log('currency', currency);
 
       if (!(currency in gainLoss)) {
         gainLoss[currency] = [];
       }
 
+      const calculatedGainLoss = await calcGainLoss(sell, buys); // + if gain, - if loss
+
       gainLoss[currency].push({
-        date,
+        sellDate: date,
         currency,
-        gain: await calcGainLoss(sell, buys) // + if gain, - if loss
-      })
-    // }
-    // });
+        gain: calculatedGainLoss.gainLoss,
+        matches: calculatedGainLoss.matches
+      });
     };
 
-    console.log('gl', gainLoss);
-
-    resolve({});
+    resolve(gainLoss);
   });
 }
 
@@ -273,6 +274,9 @@ http.createServer(async (req, res) => {
   // 4) group buys by currency
   // 5) loop over sales against buys, use up buy rows to equate amount of crypto sold
   //    track remainder for future sales or next year
+
+  // 6) produce the spreadsheet
+  //    built batch first but separate into individual sales
 
   // 0
   // read previous year data eg. prev-year-buys.json
@@ -302,7 +306,37 @@ http.createServer(async (req, res) => {
   // console.log(groupedBuys['ETH'][1]);
 
   // 5
-  await processBuySellGroups(txRowsGroupedByEvent.sells, groupedBuys);
+  const gainLoss = await processBuySellGroups(txRowsGroupedByEvent.sells, groupedBuys);
+
+  // console.log(gainLoss);
+  
+  // 6
+  const csvRows = [
+    'Currency Name,Purchase Date,Cost Basis,Date Sold,Proceeds'
+  ];
+
+  Object.keys(gainLoss).forEach(currency => {
+    gainLoss[currency].forEach(sale => {
+      sale.matches.forEach(match => {
+        const csvRow = [currency];
+
+        csvRow.push(match.buyDate.split('T')[0]);
+        csvRow.push(match.cost);
+        csvRow.push(sale.sellDate.split('T')[0]);
+        csvRow.push(match.saleAmount - match.cost);
+        csvRows.push(csvRow.join(','));
+      });
+    });
+  });
+
+  // https://stackoverflow.com/a/33589528/2710227
+  fs.writeFile('../csv-files/turbotax-import.csv', csvRows.join('\n'), 'utf8', (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('csv generated');
+    }
+  });
 
   // const jsonRes = groupedBuys;
 
