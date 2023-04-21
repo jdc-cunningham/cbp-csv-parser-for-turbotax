@@ -306,12 +306,16 @@ http.createServer(async (req, res) => {
   Object.keys(gainLoss).forEach(currency => {
     gainLoss[currency].forEach(sale => {
       sale.matches.forEach(match => {
+        if (match.cost === 0 || match.saleAmount < 1) {
+          return;
+        }
+
         const csvRow = [currency];
 
         csvRow.push(match.buyDate.split('T')[0]);
         csvRow.push(match.cost);
         csvRow.push(sale.sellDate.split('T')[0]);
-        csvRow.push(match.saleAmount - match.cost);
+        csvRow.push(match.saleAmount);
         csvRows.push(csvRow.join(','));
       });
     });
